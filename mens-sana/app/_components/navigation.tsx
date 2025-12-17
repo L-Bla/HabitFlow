@@ -24,7 +24,7 @@ function processPage(page: Page, index: number, currentPath?: string) {
 
   return (
     <li key={index}>
-      <Link href={page.path} className={isActive ? "font-extrabold" : ""}>
+      <Link href={page.path} className={isActive ? "border" : ""}>
         {page.title}
       </Link>
     </li>
