@@ -1,39 +1,41 @@
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardAction } from '../components/ui/card';
 import Link from "next/link";
 
-export interface BlogPostProps {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+export interface BlogPostProps{
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
 export const BASE_API_URL = "https://jsonplaceholder.typicode.com";
 
-async function fetchPosts(): Promise<BlogPostProps[]> {
-    const res = await fetch(`${BASE_API_URL}/posts`);
-    return res.json();
+async function fetchPosts(): Promise<BlogPostProps[]>{
+  const response = await fetch(`${BASE_API_URL}/posts`);
+  return response.json();
 }
 
-function processPost(post: BlogPostProps){
-    return(
-        <li key={post.id} className="border margin-4 p-4">
-            <Link href={`/blog/${post.id}`}>
-                <h3>{post.title}</h3>
-                <h4>Post #{post.id}</h4>
-            </Link>
-        </li>
-    )
-}
+export default async function Blog() {
+  const blogPosts = await fetchPosts();
 
-export default async function Page() {
-    const posts = await fetchPosts();
-
-    return(
-        <main>
-            <h1>Blog Posts</h1>
-            <ul>
-                {posts.map(processPost)}
-            </ul>
-        </main>
-    )
+  return (
+    <div className="space-y-6">
+      <h1>Blog</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {blogPosts.map((post) => (
+          <Link key={post.id} href={`/blog/${post.id}`}>
+          <Card key={post.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+            <CardHeader>
+              <CardTitle className="text-base">{post.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">{post.body}</p>
+            </CardContent>
+          </Card>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
 }
