@@ -25,11 +25,11 @@ const habitData = [
 ];
 
 export function MiniAnalytics() {
-  /*useEffect(() => {
+  useEffect(() => {
     const axisColor = getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || '#000';
-  }, []);*/
+  }, []);
 
-  const axisColor = window.getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || '#000';
+  //const axisColor = window.getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || '#000';
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
