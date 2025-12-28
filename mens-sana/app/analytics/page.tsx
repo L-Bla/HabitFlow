@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -72,10 +72,13 @@ const getYTicks = (param: string) => {
 };
 
 const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+const ref = useRef<HTMLDivElement>(null);
+drag(drop(ref))
 
 return (
+  
   <div
-    ref={(node) => drag(drop(node))}
+    ref={ref}
     className={`${isDragging ? 'opacity-50' : 'opacity-100'}`}
   >
     <Card className="cursor-move">
