@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -25,8 +25,12 @@ const habitData = [
 ];
 
 export function MiniAnalytics() {
-  const axisColor = getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || '#000';
-  
+  /*useEffect(() => {
+    const axisColor = getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || '#000';
+  }, []);*/
+
+  const axisColor = window.getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || '#000';
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card>
