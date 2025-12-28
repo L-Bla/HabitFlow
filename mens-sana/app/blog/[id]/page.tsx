@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { BASE_API_URL } from "../page";
-import type { BlogPostProps as Post} from "../page";
+import { BASE_API_URL } from "./../page";
+import type { BlogPostProps as Post} from "./../page";
+import { Button } from "../../components/ui/button";
 
 interface BlogPostProps{
     params: {id: string};
@@ -21,7 +22,7 @@ export default async function Page({ params }: BlogPostProps) {
         <main>
             <h1 className="text-2xl font-bold">{post.title}</h1>
             <p>{post.body}</p>
-            <Link href="/blog" className="border">Back to Blog</Link>
+            <Link href="/blog"><Button>Back to Blog</Button></Link>
         </main>
     )
 }
