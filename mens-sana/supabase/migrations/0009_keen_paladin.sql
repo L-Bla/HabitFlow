@@ -1,0 +1,1 @@
+ALTER TABLE "charts" DROP CONSTRAINT "charts_user_id_id_pk";

@@ -1,0 +1,1 @@
+ALTER TABLE "moodTracker" RENAME COLUMN "date" TO "timestamp";

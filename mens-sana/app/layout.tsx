@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "./components/ui/button";
 import "./globals.css";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -18,6 +19,7 @@ const navLinks = [
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -31,31 +33,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="text-white font-semibold">
-              Mens Sana
+              mens-sana
             </Link>
 
             {/* Desktop nav */}
             <div className="hidden md:flex space-x-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="px-3 py-2 rounded-md hover:bg-blue-500 transition"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  link.href === "/"
+                    ? pathname === "/" // special case for home
+                    : pathname.startsWith(link.href);
+
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={
+                      isActive
+                        ? "px-3 py-2 rounded-md hover:bg-blue-500 border border-solid border-white transition"
+                        : "px-3 py-2 rounded-md hover:bg-blue-500 transition"
+                    }
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Desktop dark mode */}
             <div className="hidden md:block">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDarkMode(!darkMode)}
-              >
-                {darkMode ? <Sun /> : <Moon />}
-              </Button>
+
             </div>
 
             {/* Mobile buttons */}

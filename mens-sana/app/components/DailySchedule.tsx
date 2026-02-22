@@ -1,32 +1,40 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Slider } from './ui/slider';
+import { getScheduleForDate, saveScheduleProgress } from '@/src/actions/homeActions';
+import { Button } from './ui/button';
 
-interface Activity {
-  id: string;
-  time: string;
+interface ScheduledActivity {
+  id: number;
+  habit_id: number | null;
+  time: string | null;
   name: string;
-  type: 'checkbox' | 'amount';
-  completed: boolean;
-  value?: number;
-  goal?: number;
-  unit?: string;
+  type: "checkbox" | "amount";
+  goal: number | null;
+  unit: string | null;
+  progress?: number | null;
 }
 
-const defaultActivities: Activity[] = [
-  { id: '1', time: '07:00', name: 'Morning Meditation', type: 'checkbox', completed: false },
-  { id: '2', time: '08:00', name: 'Water Intake', type: 'amount', completed: false, value: 0, goal: 8, unit: 'glasses' },
-  { id: '3', time: '09:00', name: 'Work Session', type: 'checkbox', completed: false },
-  { id: '4', time: '12:00', name: 'Exercise', type: 'amount', completed: false, value: 0, goal: 30, unit: 'minutes' },
-  { id: '5', time: '18:00', name: 'Reading', type: 'amount', completed: false, value: 0, goal: 20, unit: 'pages' },
-  { id: '6', time: '22:00', name: 'Sleep Preparation', type: 'checkbox', completed: false },
-];
-
 export function DailySchedule() {
-  const [activities, setActivities] = useState<Activity[]>(defaultActivities);
+  const [activities, setActivities] = useState<any[]>([]);
+  const [savedProgress, setSavedProgress] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function loadSchedule() {
+      const today = new Date().toISOString().split("T")[0];
+
+      const data = await getScheduleForDate(1, today); // replace 1 with real userId
+      const transformed = data.map(({progress, ...rest}) => ({
+        ...rest, value: progress
+      }))
+      setActivities(transformed);
+    }
+
+    loadSchedule();
+  }, []);
 
   const handleCheckboxChange = (id: string) => {
     setActivities((prev) =>
@@ -44,6 +52,40 @@ export function DailySchedule() {
     );
   };
 
+  const handleSave = async () => {
+    const today = new Date().toISOString().split("T")[0];
+
+    const updates = activities.map((activity) => ({
+      id: activity.id,
+      progress:
+        activity.type === "checkbox"
+          ? activity.completed
+            ? 1
+            : 0
+          : activity.value || 0,
+    }));
+
+    await saveScheduleProgress(1, updates); // replace 1 with real userId
+
+    setSavedProgress(true);
+    setTimeout(() => {
+      setSavedProgress(false)
+    }, 3000)
+
+  };
+
+  const sortActivities = (activities) => {
+    return [...activities].sort((a, b) => {
+      // Activities without time come first
+      if (!a.time && b.time) return -1;
+      if (a.time && !b.time) return 1;
+      if (!a.time && !b.time) return 0;
+      // Then sort by time
+      return a.time.localeCompare(b.time);
+    });
+  };
+  const sortedActivities = sortActivities(activities);
+
   return (
     <Card>
       <CardHeader>
@@ -51,10 +93,11 @@ export function DailySchedule() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {activities.map((activity) => (
+          {sortedActivities.map((activity) => (
             <div
               key={activity.id}
               className="flex flex-col sm:flex-row sm:items-center gap-2 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+              style={activity.habit_id ? { borderLeftWidth: '4px'} : {}}
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="text-muted-foreground whitespace-nowrap">{activity.time}</span>
@@ -87,6 +130,18 @@ export function DailySchedule() {
               )}
             </div>
           ))}
+        </div>
+        <div className="flex flex-col sm:flex-row justify-end items-center gap-2 m-4 mr-0">
+          <Button 
+            onClick={handleSave}
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
+            Save Progress
+          </Button>
+          <div
+            hidden={!savedProgress}
+            className="text-3xl">
+            ✓
+          </div>
         </div>
       </CardContent>
     </Card>

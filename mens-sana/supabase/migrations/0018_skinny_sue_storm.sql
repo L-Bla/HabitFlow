@@ -1,0 +1,1 @@
+ALTER TABLE "charts" ALTER COLUMN "position" DROP NOT NULL;
