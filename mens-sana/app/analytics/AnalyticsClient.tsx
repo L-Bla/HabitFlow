@@ -59,7 +59,7 @@ export default function AnalyticsClient(props: Props){
       );
   };
 
-  async function handleDrawNewGraph(id: string){
+  async function handleDrawNewGraph(){
     let chart = await createChart(1, param1, param2)
     return
   }
