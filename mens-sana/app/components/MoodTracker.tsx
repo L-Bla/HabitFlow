@@ -15,6 +15,7 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
   const [lastEntry, setLastEntry] = useState<Date | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());  
   const [scheduleItems, setScheduleItems] = useState<any[]>([]);
+  const [savedProgress, setSavedProgress] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,6 +52,8 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
 
     setLastEntry(new Date());
     setSelectedCell(null);
+    setSavedProgress(true);
+    setTimeout(() => setSavedProgress(false), 3000);
   };
 
   const getTimeSinceLastEntry = () => {
@@ -123,9 +126,16 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
 
         {/* Save Button and Current Time */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-          <Button onClick={handleSaveEntry} disabled={!selectedCell} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
-            Save Entry
+          <Button onClick={handleSaveEntry} 
+            disabled={!selectedCell} 
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
+            {!savedProgress ? "Save Progress" : "Progress saved!"}
           </Button>
+          <div
+            hidden={!savedProgress}
+            className="text-3xl">
+            ✓
+          </div>
           <div className="text-muted-foreground">
             {currentTime.toLocaleString('en-GB', { 
               day: '2-digit',

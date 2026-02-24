@@ -134,6 +134,7 @@ export function DailySchedule({userId, }: {userId: string;}) {
         <div className="flex flex-col sm:flex-row justify-end items-center gap-2 m-4 mr-0">
           <Button 
             onClick={handleSave}
+            disabled={savedProgress}
             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
             {!savedProgress ? "Save Progress" : "Progress saved!"}
           </Button>
