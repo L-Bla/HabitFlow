@@ -11,7 +11,6 @@ interface Emotion {
 }
 
 export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: string}) {
-  console.log(userId)
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [lastEntry, setLastEntry] = useState<Date | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());  
@@ -43,7 +42,6 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
     else if (col === 1) pleasantness = -2;
     else if (col === 2) pleasantness = 2;
     else pleasantness = 4;
-    console.log(energy, pleasantness)
 
     await saveEntry({
       userId: userId, // replace with real user
@@ -82,9 +80,6 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
     <Card className="relative">
       <CardHeader>
         <CardTitle>Mood Tracker</CardTitle>
-        <div className={`px-3 py-2 rounded-md ${getLastEntryColor()} transition-colors`}>
-          <span>Last entry: {getTimeSinceLastEntry() || 'No entries yet'}</span>
-        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Mood Grid */}

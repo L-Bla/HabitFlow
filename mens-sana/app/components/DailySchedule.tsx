@@ -39,7 +39,7 @@ export function DailySchedule({userId, }: {userId: string;}) {
   const handleCheckboxChange = (id: string) => {
     setActivities((prev) =>
       prev.map((activity) =>
-        activity.id === id ? { ...activity, completed: !activity.completed } : activity
+        activity.id.toString() === id ? { ...activity, progress: activity.progress === 1 ? 0 :1} : activity
       )
     );
   };
@@ -47,7 +47,7 @@ export function DailySchedule({userId, }: {userId: string;}) {
   const handleValueChange = (id: string, newValue: number) => {
     setActivities((prev) =>
       prev.map((activity) =>
-        activity.id === id ? { ...activity, value: newValue } : activity
+        activity.id.toString() === id ? { ...activity, progress: newValue } : activity
       )
     );
   };
@@ -59,10 +59,10 @@ export function DailySchedule({userId, }: {userId: string;}) {
       id: activity.id,
       progress:
         activity.type === "checkbox"
-          ? activity.completed
+          ? activity.progress === 1
             ? 1
             : 0
-          : activity.value || 0,
+          : activity.progress || 0,
     }));
 
     await saveScheduleProgress(userId, updates); // replace 1 with real userId
