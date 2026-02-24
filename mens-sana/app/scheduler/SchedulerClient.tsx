@@ -43,7 +43,6 @@ export default function SchedulerClient({
   userId
 }: SchedulerClientProps) {
 
-  //console.log(habits)
 
   const [todaySchedule, setTodaySchedule] =
     useState<ScheduledActivity[]>(today ?? []);
@@ -212,10 +211,7 @@ export default function SchedulerClient({
   const [hoveredTarget, setHoveredTarget] = 
       useState<"today" | "tomorrow" | null>(null);
 
-  console.log(newActivity)
-
-  const renderSchedule = (schedule: ScheduledActivity[], title: string, highlighted: boolean) => {
-    //console.log(habits)
+    const renderSchedule = (schedule: ScheduledActivity[], title: string, highlighted: boolean) => {
     const sortedSchedule = sortActivities(schedule);
     const getActivityDisplayName = (activity: ScheduledActivity) => {
       if (activity.habit_id !== undefined && activity.habit_id !== null) {
@@ -350,7 +346,6 @@ export default function SchedulerClient({
                 <Select
                   value={newActivity.habit_id !== null ? newActivity.habit_id.toString() : "none"}
                   onValueChange={(value) => {
-                    console.log(newActivity)
                     if (value === "none") {
                       setNewActivity((prev) => ({
                         ...prev, habit_id: null,}));
@@ -517,7 +512,6 @@ export default function SchedulerClient({
 }
 
 const updateActivityInDB = async (activity: ScheduledActivity, userId: string) => {
-  console.log(activity)
   try {
     const updated = await updateActivity(
       activity.id,
