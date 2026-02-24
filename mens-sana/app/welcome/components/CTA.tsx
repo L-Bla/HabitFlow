@@ -1,5 +1,6 @@
 import { Button } from "@/app/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function CTA() {
   return (
@@ -17,20 +18,24 @@ export function CTA() {
             </p>
             
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Button
-                size="lg"
-                className="group bg-white text-lg text-blue-600 hover:bg-gray-100"
-              >
-                Start Your Free Trial
-                <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-white bg-transparent text-lg text-white hover:bg-white/10"
-              >
-                Learn More
-              </Button>
+              <Link href="/signup">
+                <Button
+                  size="lg"
+                  className="group bg-white text-lg text-blue-600 hover:bg-gray-100"
+                >
+                  Start Your Free Trial
+                  <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
+              <Link href="/blog">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-2 border-white bg-transparent text-lg text-white hover:bg-white/10"
+                >
+                  Learn More
+                </Button>
+              </Link>
             </div>
             
             <p className="mt-6 text-sm text-white/80">
