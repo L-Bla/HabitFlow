@@ -6,7 +6,7 @@ import { and, eq, gte, lte, asc } from "drizzle-orm";
 import { headers } from "next/headers";
 import { auth } from "../auth";
 
-const average = array => +parseFloat(Number(array.reduce((a, b) => Number(a) + Number(b), 0)/array.length)).toFixed(2);
+const average = (array: number[]) => Number(array.reduce((a, b) => Number(a) + Number(b), 0)/array.length).toFixed(2);
 
 type MetricKey = "energy" | "pleasantness" | "value";
 
@@ -70,7 +70,7 @@ function mergeByDate<
   >();
 
   for (const row of rows1) {
-    map.set(row.x, { ...row });
+    map.set(row.x, { ...row } as any);
   }
 
   for (const row of rows2) {
@@ -79,13 +79,11 @@ function mergeByDate<
     if (existing) {
       Object.assign(existing, row);
     } else {
-      map.set(row.x, { ...row });
+      map.set(row.x, { ...row } as any);
     }
   }
 
-  return Array.from(map.values()) as {
-    x: string;
-  } & Record<K1 | K2, number>[];
+  return Array.from(map.values()) as ({ x: string } & Partial<Record<K1 | K2, number>>)[];
 }
 
 
@@ -101,7 +99,7 @@ async function fetchRows(user_id: string, param: string){
       .where(eq(moodTracker.user_id, user_id))
 
     rows = tempRows.map(e => {
-      return {x: e.x, energy: average(e.energy)}
+      return {x: e.x, energy: Number(average(e.energy || []))}
     });
     rows = fillData(rows, "energy")
 
@@ -113,7 +111,7 @@ async function fetchRows(user_id: string, param: string){
       .where(eq(moodTracker.user_id, user_id))
 
     rows = tempRows.map(e => {
-      return {x: e.x, pleasantness: average(e.pleasantness)}
+      return {x: e.x, pleasantness: Number(average(e.pleasantness || []))}
     });
     rows = fillData(rows, "pleasantness")
 
@@ -121,7 +119,7 @@ async function fetchRows(user_id: string, param: string){
     rows = await db
       .select({
         x: habitTracker.date,
-        [param]: habitTracker.value,
+        value: habitTracker.value,
       })
       .from(habitTracker)
       .innerJoin(
@@ -193,7 +191,7 @@ export default async function createChart(userId: string, param1: string, param2
   let data;
   if (param2){
     let rows2 = await fetchRows(session.user.id, param2)
-    data = mergeByDate(rows, rows2)
+    data = mergeByDate(rows as Row<MetricKey>[], rows2 as Row<MetricKey>[])
   }else{
     data = rows;
   }

@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select';
 
-export default function DrawNewGraphCard({ user_id, createChart }) {
+export default function DrawNewGraphCard({ user_id, createChart }: { user_id: string; createChart: (config: any) => Promise<void> }) {
   const [param1, setParam1] = useState('');
   const [param2, setParam2] = useState('none');
   const [timespan, setTimespan] = useState(7);

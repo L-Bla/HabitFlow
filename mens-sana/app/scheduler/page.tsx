@@ -44,11 +44,13 @@ export default async function SchedulerPage() {
     .from(habits)
     .where(eq(habits.user_id, session.user.id))
   
+  const validHabits = userHabits.filter((habit): habit is typeof userHabits[number] & { type: "amount" | "checkbox" } => habit.type !== null);
+  
   return (
     <SchedulerClient
       today={todayActivities}
       tomorrow={tomorrowActivities}
-      habits={userHabits}
+      habits={validHabits}
       userId={session.user.id}
     />
   );

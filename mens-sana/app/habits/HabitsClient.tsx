@@ -9,18 +9,17 @@ import { CheckSquare, SlidersHorizontal, Trash2 } from 'lucide-react';
 import addHabit from '@/src/actions/addHabit';
 import editHabit from '@/src/actions/editHabit';
 import deleteHabit from '@/src/actions/deleteHabit';
-import { user } from '@/src/db';
 
 interface Habit {
   id: number;
   name: string;
-  type: 'checkbox' | 'amount';
-  description: string;
-  goal: number | undefined;
-  unit: string | undefined;
+  type: 'checkbox' | 'amount' | null;
+  description: string | null;
+  goal: number | null;
+  unit: string | null;
 }
 
-export default function Habits({userHabits, userId}: {userHabits: Habit[]; userId: string;}) {
+export default function Habits({userHabits, userId}: {userHabits: Habit[]; userId: string}) {
   const [habits, setHabits] = useState<Habit[]>(userHabits ?? []);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [newHabit, setNewHabit] = useState({
@@ -39,10 +38,10 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
     let habit = await addHabit(
         userId, newHabit.name,
         newHabit.description, newHabit.type,
-        newHabit.type === "amount" ? Number(newHabit.goal) : undefined,
-        newHabit.type === "amount" ? newHabit.unit : undefined)  
+        newHabit.type === "amount" ? Number(newHabit.goal) : null,
+        newHabit.type === "amount" ? newHabit.unit : null ) 
 
-    setHabits((prev) => [...prev, habit]);
+    setHabits((prev) => [...prev, habit as Habit]);
 
     setNewHabit({
         id: 0,
@@ -59,10 +58,10 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
     setNewHabit({
       id: habit.id,
       name: habit.name,
-      type: habit.type,
-      goal: habit.goal,
-      unit: habit.unit,
-      description: habit.description,
+      type: habit.type!,
+      goal: habit.goal !== undefined ? String(habit.goal) : "",
+      unit: habit.unit ?? "",
+      description: habit.description!,
     });
   };
 
@@ -72,13 +71,20 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
     let habit = await editHabit(
         userId, newHabit.id, newHabit.name,
         newHabit.description, newHabit.type,
-        newHabit.type === "amount" ? (newHabit.goal) : "",
-        newHabit.type === "amount" ? newHabit.unit : "")  
+        newHabit.type === "amount" ? Number(newHabit.goal).toString() : null,
+        newHabit.type === "amount" ? newHabit.unit : null)  
 
     setHabits((prev) =>
       prev.map((h) =>
         h.id === editingHabit.id
-          ? { ...h, ...newHabit }
+          ? {
+              ...h,
+              name: newHabit.name,
+              type: newHabit.type,
+              description: newHabit.description,
+              goal: newHabit.type === "amount" ? Number(newHabit.goal) : null,
+              unit: newHabit.type === "amount" ? newHabit.unit : null,
+            }
           : h
       )
     );
@@ -102,7 +108,7 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
     setHabits((prev) => prev.filter((h) => h.id !== editingHabit.id));
     setEditingHabit(null);
     setNewHabit({
-      id: 0,
+        id: 0,
       name: '',
       type: 'checkbox',
       description: '',

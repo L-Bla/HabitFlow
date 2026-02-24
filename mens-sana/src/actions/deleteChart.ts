@@ -19,7 +19,7 @@ export default async function deleteChart(chart_id: string){
         await db.delete(charts)
             .where(and(
                 eq(charts.user_id, session.user.id),
-                eq(charts.id, chart_id)
+                eq(charts.id, parseInt(chart_id))
             ))
 
         return { success: true}

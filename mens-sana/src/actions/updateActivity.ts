@@ -2,7 +2,7 @@
 
 import { db } from "@/src/index";
 import { schedule } from "@/src/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 /**
  * Update activity
@@ -22,11 +22,11 @@ export default async function updateActivity(
       .update(schedule)
       .set({
         habit_id: habitId,
-        time,
-        name,
+        time: time || undefined,
+        name: name || undefined,
         type,
-        goal,
-        unit,
+        goal: goal || undefined,
+        unit: unit || undefined,
       })
       .where(
         and(

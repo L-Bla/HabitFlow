@@ -17,9 +17,19 @@ import { ChartUI } from "@/src/db/schema";
 import { Button } from "./ui/button";
 import deleteChart from "@/src/actions/deleteChart";
 
+interface YAxisConfig {
+  domain: [number, number];
+  ticks?: number[];
+}
+
+interface DateRange {
+  min: Date | null;
+  max: Date | null;
+}
+
 interface Props {
   chart: ChartUI;
-  onDelete;
+  onDelete: (chartId: string, title: string) => void;
   index: number;
   moveChart: (from: number, to: number) => void;
 }
@@ -89,18 +99,18 @@ function getYAxisConfig(
 export default function DraggableChart({
   chart,
   onDelete,
-  index
-}) {
+  index,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const leftAxis = getYAxisConfig(
-    chart.param1,
+    chart.param1 as "energy" | "pleasantness" | "habit",
     chart.data,
     chart.param1
   );
 
   const rightAxis = chart.param2
-    ? getYAxisConfig(chart.param2, chart.data, chart.param2)
+    ? getYAxisConfig(chart.param2 as "energy" | "pleasantness" | "habit", chart.data, chart.param2)
     : null;
 
   async function handleDeleteChart(){

@@ -1,6 +1,5 @@
 // MoodTrackerWrapper.tsx
 import { Suspense } from "react";
-import { getDefaultMoods, getScheduleForDate } from "@/src/actions/homeActions";
 import { MoodTracker } from "./MoodTracker";
 import { MoodTrackerSkeleton } from "./MoodTrackerSkeleton";
 
@@ -51,7 +50,7 @@ async function fetchMoodsFromContentful(): Promise<MoodItem[]> {
   return json.data.moodCollection.items;
 }
 
-async function MoodTrackerContent(userId: string) {
+async function MoodTrackerContent({userId}: {userId: string}) {
   const data = await fetchMoodsFromContentful();
 
   // 1️⃣ Sort by:
@@ -85,13 +84,13 @@ async function MoodTrackerContent(userId: string) {
     .sort((a, b) => b - a) // ⬅️ ASC (low energy first)
     .map((energy) => grouped[energy]);
 
-  return <MoodTracker emotions={grid} userId={userId.userId}/>;
+  return <MoodTracker emotions={grid} userId={userId}/>;
 }
 
-export function MoodTrackerWrapper(userId: string) {
+export function MoodTrackerWrapper({userId}: {userId: string}) {
   return (
     <Suspense fallback={<MoodTrackerSkeleton />}>
-      <MoodTrackerContent userId={userId.userId}/>
+      <MoodTrackerContent userId={userId}/>
     </Suspense>
   );
 }

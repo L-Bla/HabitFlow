@@ -78,12 +78,12 @@ export default function SchedulerClient({
       if (a.time && !b.time) return 1;
       if (!a.time && !b.time) return 0;
       // Then sort by time
-      return a.time.localeCompare(b.time);
+      return a.time!.localeCompare(b.time!);
     });
   };
 
   const getHabitById = (id: number) =>
-    habits.find((h) => h.id === id);
+    habits.find((h) => h.id === id) || null;
 
   function resetForm() {
     setEditingActivity(null);
@@ -104,7 +104,7 @@ export default function SchedulerClient({
       newActivity.habit_id !== undefined;
 
     const activityName = isHabit
-      ? getHabitById(Number(newActivity.habit_id)).name
+      ? getHabitById(Number(newActivity.habit_id))?.name
       : newActivity.customName;
     
     if (!activityName) {
@@ -173,13 +173,15 @@ export default function SchedulerClient({
       }, userId);
 
       // 🔥 Replace with DB returned object
-      setTodaySchedule(prev =>
-        prev.map(a => (a.id === updatedFromDB.id ? updatedFromDB : a))
-      );
+      if (updatedFromDB) {
+        setTodaySchedule(prev =>
+          prev.map(a => (a.id === updatedFromDB.id ? updatedFromDB : a))
+        );
 
-      setTomorrowSchedule(prev =>
-        prev.map(a => (a.id === updatedFromDB.id ? updatedFromDB : a))
-      );
+        setTomorrowSchedule(prev =>
+          prev.map(a => (a.id === updatedFromDB.id ? updatedFromDB : a))
+        );
+      }
 
       resetForm();
     } catch (error) {

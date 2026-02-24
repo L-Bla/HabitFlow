@@ -18,7 +18,7 @@ interface ScheduledActivity {
   progress?: number | null;
 }
 
-export function DailySchedule(userId: string) {
+export function DailySchedule({userId, }: {userId: string;}) {
   const [activities, setActivities] = useState<any[]>([]);
   const [savedProgress, setSavedProgress] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ export function DailySchedule(userId: string) {
     async function loadSchedule() {
       const today = new Date().toISOString().split("T")[0];
 
-      const data = await getScheduleForDate(userId.userId, today); // replace 1 with real userId
+      const data = await getScheduleForDate(userId, today); // replace 1 with real userId
       const transformed = data.map(({progress, ...rest}) => ({
         ...rest, value: progress
       }))
@@ -65,7 +65,7 @@ export function DailySchedule(userId: string) {
           : activity.value || 0,
     }));
 
-    await saveScheduleProgress(userId.userId, updates); // replace 1 with real userId
+    await saveScheduleProgress(userId, updates); // replace 1 with real userId
 
     setSavedProgress(true);
     setTimeout(() => {
@@ -74,14 +74,14 @@ export function DailySchedule(userId: string) {
 
   };
 
-  const sortActivities = (activities) => {
+  const sortActivities = (activities: ScheduledActivity[]): ScheduledActivity[] => {
     return [...activities].sort((a, b) => {
       // Activities without time come first
       if (!a.time && b.time) return -1;
       if (a.time && !b.time) return 1;
       if (!a.time && !b.time) return 0;
       // Then sort by time
-      return a.time.localeCompare(b.time);
+      return a.time!.localeCompare(b.time!);
     });
   };
   const sortedActivities = sortActivities(activities);
@@ -107,24 +107,24 @@ export function DailySchedule(userId: string) {
               {activity.type === 'checkbox' ? (
                 <div className="flex items-center justify-end sm:justify-start">
                   <Checkbox
-                    checked={activity.completed}
-                    onCheckedChange={() => handleCheckboxChange(activity.id)}
-                    id={activity.id}
+                    checked={activity.progress === 1}
+                    onCheckedChange={() => handleCheckboxChange(activity.id.toString())}
+                    id={activity.id.toString()}
                   />
                 </div>
               ) : (
                 <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
                   <div className="flex-1 min-w-[120px] sm:min-w-[200px]">
                     <Slider
-                      value={[activity.value || 0]}
-                      onValueChange={(value) => handleValueChange(activity.id, value[0])}
-                      max={activity.goal}
+                      value={[activity.progress || 0]}
+                      onValueChange={(value) => handleValueChange(activity.id.toString(), value[0])}
+                      max={activity.goal!}
                       step={1}
                       className="w-full"
                     />
                   </div>
                   <div className="text-muted-foreground whitespace-nowrap">
-                    {activity.value} / {activity.goal} {activity.unit}
+                    {activity.progress} / {activity.goal} {activity.unit}
                   </div>
                 </div>
               )}

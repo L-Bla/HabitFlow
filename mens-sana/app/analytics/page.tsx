@@ -11,7 +11,14 @@ export default async function Analytics(){
         headers: await headers(),
     })
     if (!session) redirect('/signin')
-    const initialCharts = await db.select().from(charts)
+    const chartsData = await db.select().from(charts)
+    const initialCharts = chartsData.map(chart => ({
+        ...chart,
+        id: String(chart.id),
+        param2: chart.param2 ?? undefined,
+        onHome: chart.onHome ?? false,
+        data: chart.data as { x: string; values: { v1: number; v2: number; }[] }[]
+    }))
     const userHabits = await db.select({name: habits.name}).from(habits)//.where(eq(habits.user_id, 1))
     
     return(

@@ -21,7 +21,7 @@ interface HabitName {
 interface Props {
   initialCharts: ChartUI[],
   userHabits: HabitName[],
-  session
+  session: Awaited<ReturnType<typeof import("@/src/auth").auth.api.getSession>>
 }
 
 export default function AnalyticsClient(props: Props){
@@ -31,9 +31,9 @@ export default function AnalyticsClient(props: Props){
   const [param2, setParam2] = useState('');
   const [timespan, setTimespan] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
-  const [chartToDelete, setChartToDelete] = useState(null);
+  const [chartToDelete, setChartToDelete] = useState<{id: string, title: string} | null>(null);
 
-  const onDelete = (id, title) => {
+  const onDelete = (id: string, title: string) => {
     setChartToDelete({ id, title });
     setShowConfirm(true);
   };
@@ -57,10 +57,17 @@ export default function AnalyticsClient(props: Props){
   };
 
   async function handleDrawNewGraph(){
-    let chart = await createChart(props.session.user.id, param1, param2)
-    setCharts(prev => ([...prev, chart]))
+    let chart = await createChart(props.session!.user.id, param1, param2)
+    setCharts(prev => ([...prev, { ...chart, id: String(chart.id) } as ChartUI]))
     return
   }
+
+  const moveChart = (fromIndex: number, toIndex: number) => {
+    const newCharts = [...charts];
+    const [movedChart] = newCharts.splice(fromIndex, 1);
+    newCharts.splice(toIndex, 0, movedChart);
+    setCharts(newCharts);
+  };
 
   return(
     <DndProvider backend={HTML5Backend}>
@@ -71,6 +78,7 @@ export default function AnalyticsClient(props: Props){
                 chart={chart}
                 index={index}
                 onDelete={onDelete}
+                moveChart={moveChart}
             />
             ))}
         </div>
