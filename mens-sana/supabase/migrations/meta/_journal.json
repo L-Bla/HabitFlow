@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1771863142919,
+      "tag": "0000_flaky_sally_floyd",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771924224135,
+      "tag": "0001_kind_lord_hawal",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771955562608,
+      "tag": "0002_fine_captain_cross",
+      "breakpoints": true
+    }
+  ]
+}
