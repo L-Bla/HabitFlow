@@ -1,1 +1,0 @@
-ALTER TABLE "charts" DROP COLUMN "title";

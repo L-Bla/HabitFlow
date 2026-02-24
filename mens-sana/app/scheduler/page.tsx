@@ -4,8 +4,15 @@ import { db } from "@/src/index";
 import { schedule, habits } from "@/src/db/schema";
 import { eq, and } from "drizzle-orm";
 import SchedulerClient from "./SchedulerClient";
+import { auth } from "@/src/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function SchedulerPage() {
+  const session = await auth.api.getSession({
+      headers: await headers(),
+  })
+  if (!session) redirect('/signin')
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
@@ -20,20 +27,29 @@ export default async function SchedulerPage() {
   const todayActivities = await db
     .select()
     .from(schedule)
-    .where(eq(schedule.date, todayString));
+    .where(and(
+      eq(schedule.date, todayString),
+      eq(schedule.user_id, session.user.id)
+    ))
 
   const tomorrowActivities = await db
     .select()
     .from(schedule)
-    .where(eq(schedule.date, tomorrowString));
+    .where(and(
+      eq(schedule.date, tomorrowString),
+      eq(schedule.user_id, session.user.id)
+    ))
 
-  const userHabits = await db.select().from(habits);
-  console.log(todayActivities)
+  const userHabits = await db.select()
+    .from(habits)
+    .where(eq(habits.user_id, session.user.id))
+  
   return (
     <SchedulerClient
       today={todayActivities}
       tomorrow={tomorrowActivities}
       habits={userHabits}
+      userId={session.user.id}
     />
   );
 }

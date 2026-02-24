@@ -4,7 +4,7 @@ import { db } from "@/src/index"
 import { habits } from "@/src/db/schema"
 
 export default async function addHabit(
-    userId: number, name: string, 
+    userId: string, name: string, 
     description: string, type: string, 
     goal: string, unit: string
 ){

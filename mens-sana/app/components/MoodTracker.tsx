@@ -10,7 +10,8 @@ interface Emotion {
   name: string;
 }
 
-export function MoodTracker(emotions: Emotion[][]) {
+export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: string}) {
+  console.log(userId)
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [lastEntry, setLastEntry] = useState<Date | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());  
@@ -29,7 +30,7 @@ export function MoodTracker(emotions: Emotion[][]) {
 
   const getEmotionForCell = (row: number, col: number): Emotion => {
     const key = `${row}-${col}`;
-    return emotions.emotions[row][col];
+    return emotions[row][col];
   };
 
   const handleSaveEntry = async () => {
@@ -45,7 +46,7 @@ export function MoodTracker(emotions: Emotion[][]) {
     console.log(energy, pleasantness)
 
     await saveEntry({
-      userId: 1, // replace with real user
+      userId: userId, // replace with real user
       energy,
       pleasantness,
     });
@@ -98,7 +99,7 @@ export function MoodTracker(emotions: Emotion[][]) {
               Energy →
             </div>
             <div className="grid grid-cols-4 gap-2 flex-1">
-              {emotions.emotions.map((row, rowIndex) =>
+              {emotions.map((row, rowIndex) =>
                 row.map((_, colIndex) => {
                   const emotion = getEmotionForCell(rowIndex, colIndex);
                   const isSelected = selectedCell?.row === rowIndex && selectedCell?.col === colIndex;

@@ -7,9 +7,9 @@ import { and, eq } from "drizzle-orm";
 /**
  * Update activity
  */
-export async function updateActivity(
+export default async function updateActivity(
   id: number,
-  userId: number,
+  userId: string,
   habitId: number | null,
   time: string | null,
   name: string | null,

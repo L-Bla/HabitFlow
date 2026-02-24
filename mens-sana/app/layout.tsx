@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "./components/ui/button";
 import "./globals.css";
 import { usePathname } from "next/navigation";
+import { Logo } from "./welcome/components/Logo";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -13,28 +14,28 @@ const navLinks = [
   { label: "Scheduler", href: "/scheduler" },
   { label: "Habits", href: "/habits" },
   { label: "Blog", href: "/blog" },
-  { label: "Options", href: "/options" },
+  { label: "Account", href: "/account"}
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-  }, [darkMode]);
 
   return (
     <html lang="en">
       <body className="min-h-screen bg-background">
         {/* Navbar */}
-        <nav className="bg-blue-600 text-white shadow-lg sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="text-white font-semibold">
-              mens-sana
-            </Link>
+        <nav className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
+              <div className="mx-auto max-w-7xl px-6 py-4">
+                <div className="flex items-center justify-between">
+                  <Link href="/welcome">
+                    <div className="flex items-center gap-2">
+                      <Logo size={40} />
+                        <span className="text-xl font-bold text-blue-600">
+                          HabitFlow
+                        </span>
+                    </div>
+                  </Link>
 
             {/* Desktop nav */}
             <div className="hidden md:flex space-x-4">
@@ -50,8 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     href={link.href}
                     className={
                       isActive
-                        ? "px-3 py-2 rounded-md hover:bg-blue-500 border border-solid border-white transition"
-                        : "px-3 py-2 rounded-md hover:bg-blue-500 transition"
+                        ? "px-3 py-2 rounded-md hover:bg-blue-300 border border-solid border-black transition"
+                        : "px-3 py-2 rounded-md hover:bg-blue-300 transition"
                     }
                   >
                     {link.label}
@@ -61,19 +62,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
 
             {/* Desktop dark mode */}
-            <div className="hidden md:block">
-
+            <div className="md:block">
+              
             </div>
 
             {/* Mobile buttons */}
             <div className="md:hidden flex space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDarkMode(!darkMode)}
-              >
-                {darkMode ? <Sun /> : <Moon />}
-              </Button>
               <Button
                 variant="ghost"
                 size="icon"
@@ -86,19 +80,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           {/* Mobile menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden bg-blue-700 px-2 py-2">
+            <div className="md:hidden bg-white/80 backdrop-blur-md px-2 py-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded-md hover:bg-blue-600"
+                  className="block px-3 py-2 rounded-md bg-white/80 backdrop-blur-md hover:bg-blue-300"
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
           )}
+          </div>
         </nav>
 
         {/* Page content */}

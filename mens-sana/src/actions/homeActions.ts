@@ -1,10 +1,10 @@
 "use server"
 
 import { db } from "@/src/index";
-import { schedule, moods, habitTracker, moodTracker } from "@/src/db/schema";
+import { schedule, habitTracker, moodTracker } from "@/src/db/schema";
 import { and, asc, desc, eq } from "drizzle-orm";
 
-export async function getScheduleForDate(userId: number, selectedDate: string) {
+export async function getScheduleForDate(userId: string, selectedDate: string) {
   return await db
     .select()
     .from(schedule)
@@ -17,21 +17,12 @@ export async function getScheduleForDate(userId: number, selectedDate: string) {
     .orderBy(schedule.time);
 }
 
-export async function getDefaultMoods() {
-  const data = await db
-    .select()
-    .from(moods)
-    .orderBy(asc(moods.energy), asc(moods.pleasantess));
-
-  return data;
-}
-
 export async function saveEntry({
   userId,
   energy,
   pleasantness,
 }: {
-  userId: number;
+  userId: string;
   energy: number;
   pleasantness: number;
 }) {
@@ -78,7 +69,7 @@ export async function saveEntry({
 }
 
 export async function saveScheduleProgress(
-  userId: number,
+  userId: string,
   updates: {
     id: number;
     progress: number;
@@ -140,12 +131,11 @@ export async function saveScheduleProgress(
   return { success: true };
 }
 
-export const getLastEntry = async (userId: number) => {
+export const getLastEntry = async (userId: string) => {
   return await db
     .select({ date: moodTracker.date })
     .from(moodTracker)
     .where(eq(moodTracker.user_id, userId))
     .orderBy(desc(moodTracker.date))
     .limit(1)
-
 }

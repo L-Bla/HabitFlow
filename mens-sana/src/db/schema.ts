@@ -1,16 +1,11 @@
 import { integer, pgEnum, pgTable, serial, text, timestamp, date, boolean, primaryKey, time, jsonb, uniqueIndex } from 'drizzle-orm/pg-core';
+import { user } from "./auth-schema"
 
 export const activityTypeEnum = pgEnum('activity_type', ['amount', 'checkbox']);
 export const tracksTypeEnum = pgEnum('tracks_type', ['habit', 'energy', 'pleasantness'])
 
-export const users = pgTable('users', {
-    id: serial('id').primaryKey(),
-    username: text('username').notNull(),
-    passwordHash: text('password_hash').notNull()
-});
-
 export const habits = pgTable('habits', {
-    user_id: integer('user_id').notNull().references(() => users.id),
+    user_id: text('user_id').notNull().references(() => user.id),
     id: serial('id').primaryKey(),
     name: text('name').notNull(),
     description: text('description'),
@@ -20,8 +15,9 @@ export const habits = pgTable('habits', {
 });
 
 export const schedule = pgTable('schedule', {
-    user_id: integer('user_id').notNull().references(() => users.id),
-    habit_id: integer('habit_id').references(() => habits.id),
+    user_id: text('user_id').notNull().references(() => user.id),
+    habit_id: integer('habit_id').references(() => habits.id, 
+      {onDelete: 'cascade'}),
     id: serial('id').notNull(),
     date: date('date').notNull(),
     time: time('time'),
@@ -34,16 +30,9 @@ export const schedule = pgTable('schedule', {
     primaryKey({columns: [table.user_id, table.id]})
 ]);
 
-export const moods = pgTable('defaultMoods', {
-    id: serial('id').primaryKey(),
-    name: text('name').notNull(),
-    emoji: text('emoji').notNull(),
-    energy: integer('energy').notNull(),
-    pleasantess: integer('pleasantess').notNull(),
-});
 
 export const moodTracker = pgTable('moodTracker', {
-    user_id: integer('user_id').notNull().references(() => users.id),
+    user_id: text('user_id').notNull().references(() => user.id),
     date: date('date').notNull(),
     energy: integer('energy').array(),
     pleasantness: integer('pleasantness').array(),
@@ -51,13 +40,14 @@ export const moodTracker = pgTable('moodTracker', {
 })
 
 export const habitTracker = pgTable('habitsTracker', {
-  user_id: integer('user_id')
+  user_id: text('user_id')
     .notNull()
-    .references(() => users.id),
+    .references(() => user.id),
 
   habit_id: integer('habit_id')
     .notNull()
-    .references(() => habits.id),
+    .references(() => habits.id,
+      {onDelete: 'cascade'}),
 
   date: date('date').notNull(),
 
@@ -67,9 +57,8 @@ export const habitTracker = pgTable('habitsTracker', {
 ]);
 
 export const charts = pgTable('charts', {
-    user_id: integer('user_id').notNull().references(() => users.id),
+    user_id: text('user_id').notNull().references(() => user.id),
     id: serial('id').notNull(),
-    position: serial('position'),
     title: text('title').notNull(),
     param1: text('param1').notNull(),
     param2: text('param2'),
@@ -81,7 +70,6 @@ export const charts = pgTable('charts', {
 
 export interface ChartUI {
   id: string;
-  position: number;
   title: string;
   param1: string;
   param2?: string;

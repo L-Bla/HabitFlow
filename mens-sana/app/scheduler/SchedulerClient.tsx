@@ -7,12 +7,12 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { AlertCircle, CheckSquare, SlidersHorizontal } from 'lucide-react';
 import addActivity from '@/src/actions/addActivity';
-import { updateActivity } from '@/src/actions/updateActivity';
-import { deleteActivity } from '@/src/actions/deleteActivity';
+import updateActivity from '@/src/actions/updateActivity';
+import deleteActivity from '@/src/actions/deleteActivity';
 
 interface ScheduledActivity {
   id: number;
-  habitId: number | null;
+  habit_id: number | null;
   time: string | null;
   name: string;
   type: "checkbox" | "amount";
@@ -33,13 +33,17 @@ interface SchedulerClientProps {
   today: ScheduledActivity[];
   tomorrow: ScheduledActivity[];
   habits: Habit[];
+  userId: string;
 }
 
 export default function SchedulerClient({
   today,
   tomorrow,
-  habits
+  habits,
+  userId
 }: SchedulerClientProps) {
+
+  //console.log(habits)
 
   const [todaySchedule, setTodaySchedule] =
     useState<ScheduledActivity[]>(today ?? []);
@@ -49,7 +53,7 @@ export default function SchedulerClient({
     
   const [newActivity, setNewActivity] = useState({
     time: '',
-    habitId: '' as number | '',
+    habit_id: null as number | null,
     customName: '',
     type: 'checkbox' as 'checkbox' | 'amount',
     progress: "",
@@ -78,14 +82,14 @@ export default function SchedulerClient({
     });
   };
 
-  const getHabitById = (id: number | null) =>
+  const getHabitById = (id: number) =>
     habits.find((h) => h.id === id);
 
   function resetForm() {
     setEditingActivity(null);
     setNewActivity({
         time: "",
-        habitId: null,
+        habit_id: null,
         customName: "",
         type: "checkbox",
         progress: "",
@@ -94,114 +98,15 @@ export default function SchedulerClient({
     });
   }
 
-
-  const handleAddActivity1 = (day: 'today' | 'tomorrow') => {
-    const isHabit = !!newActivity.habitId;
-    const activityName = isHabit
-      ? getHabitById(Number(newActivity.habitId))?.name
-      : newActivity.customName;
-
-    if (!activityName) {
-      setWarning('Please select a habit or enter an activity name');
-      return;
-    }
-
-    if (newActivity.type === 'amount' && (!newActivity.goal || !newActivity.unit)) {
-      setWarning('Please enter goal and unit for amount type');
-      return;
-    }
-
-    const targetSchedule = day === 'today' ? todaySchedule : tomorrowSchedule;
-
-    if (newActivity.time && checkOverlap(targetSchedule, newActivity.time)) {
-      setWarning(`Warning: There is already an activity at ${newActivity.time} for ${day}`);
-    }
-
-    const activity: ScheduledActivity = {
-      id: Date.now(), 
-      habitId: isHabit ? Number(newActivity.habitId) : null,
-      name: activityName,
-      time: newActivity.time || null,
-      type: newActivity.type,
-      goal:
-        newActivity.type === 'amount'
-          ? parseInt(newActivity.goal)
-          : null,
-      unit:
-        newActivity.type === 'amount'
-          ? newActivity.unit
-          : null,
-      progress: newActivity.type === 'amount' ? 0 : null,
-    };
-
-    if (day === 'today') {
-      setTodaySchedule((prev) => sortActivities([...prev, activity]));
-    } else {
-      setTomorrowSchedule((prev) => sortActivities([...prev, activity]));
-    }
-
-    resetForm();
-  };
-
-  async function handleUpdateActivity1() {
-    if (!editingActivity) return;
-
-    const isHabit = !!newActivity.habitId;
-
-    const updated: ScheduledActivity = {
-      ...editingActivity,
-      habitId: isHabit ? Number(newActivity.habitId) : null,
-      name: isHabit ? null : newActivity.customName,
-      time: newActivity.time || null,
-      type: newActivity.type,
-      goal:
-        newActivity.type === "amount"
-          ? parseInt(newActivity.goal)
-          : null,
-      unit:
-        newActivity.type === "amount"
-          ? newActivity.unit
-          : null,
-    };
-
-    await updateActivityInDB(updated);
-
-    setTodaySchedule((prev) =>
-      prev.map((a) => (a.id === updated.id ? updated : a))
-    );
-
-    setTomorrowSchedule((prev) =>
-      prev.map((a) => (a.id === updated.id ? updated : a))
-    );
-
-    resetForm();
-  }
-
-  async function handleDeleteActivity1() {
-      if (!editingActivity) return;
-
-      await deleteActivityFromDB(editingActivity.id);
-
-      setTodaySchedule((prev) =>
-          prev.filter((a) => a.id !== editingActivity.id)
-      );
-
-      setTomorrowSchedule((prev) =>
-          prev.filter((a) => a.id !== editingActivity.id)
-      );
-
-      resetForm();
-  }
-
-
-
   const handleAddActivity = async (day: 'today' | 'tomorrow') => {
-    const isHabit = !!newActivity.habitId;
+    const isHabit =
+      newActivity.habit_id !== null &&
+      newActivity.habit_id !== undefined;
 
     const activityName = isHabit
-      ? getHabitById(Number(newActivity.habitId))?.name
+      ? getHabitById(Number(newActivity.habit_id)).name
       : newActivity.customName;
-
+    
     if (!activityName) {
       setWarning('Please select a habit or enter an activity name');
       return;
@@ -221,8 +126,8 @@ export default function SchedulerClient({
 
       // 🔥 INSERT INTO DB FIRST
       const created = await addActivity(
-        1, // userId (replace later with auth)
-        isHabit ? Number(newActivity.habitId) : null,
+        userId, // userId (replace later with auth)
+        isHabit ? Number(newActivity.habit_id) : null,
         date.toISOString().split('T')[0],
         newActivity.time || null,
         activityName,
@@ -248,12 +153,12 @@ export default function SchedulerClient({
   async function handleUpdateActivity() {
     if (!editingActivity) return;
 
-    const isHabit = !!newActivity.habitId;
+    const isHabit = !!newActivity.habit_id;
 
     try {
       const updatedFromDB = await updateActivityInDB({
         id: editingActivity.id,
-        habitId: isHabit ? Number(newActivity.habitId) : null,
+        habit_id: isHabit ? Number(newActivity.habit_id) : null,
         time: newActivity.time || null,
         name: newActivity.customName,
         type: newActivity.type,
@@ -265,7 +170,7 @@ export default function SchedulerClient({
           newActivity.type === "amount"
             ? newActivity.unit
             : null,
-      });
+      }, userId);
 
       // 🔥 Replace with DB returned object
       setTodaySchedule(prev =>
@@ -286,7 +191,7 @@ export default function SchedulerClient({
     if (!editingActivity) return;
 
     try {
-      await deleteActivityFromDB(editingActivity.id);
+      await deleteActivityFromDB(editingActivity.id, userId);
 
       setTodaySchedule(prev =>
         prev.filter(a => a.id !== editingActivity.id)
@@ -302,18 +207,18 @@ export default function SchedulerClient({
     }
   }
 
-
-
-
   const [hoveredTarget, setHoveredTarget] = 
       useState<"today" | "tomorrow" | null>(null);
 
+  console.log(newActivity)
+
   const renderSchedule = (schedule: ScheduledActivity[], title: string, highlighted: boolean) => {
+    //console.log(habits)
     const sortedSchedule = sortActivities(schedule);
     const getActivityDisplayName = (activity: ScheduledActivity) => {
-      if (activity.habitId !== undefined && activity.habitId !== null) {
-        const habit = habits.find((h) => h.id === activity.habitId);
-        return habit?.name ?? "Deleted habit";
+      if (activity.habit_id !== undefined && activity.habit_id !== null) {
+        const habit = habits.find((h) => h.id === activity.habit_id);
+        return habit ? habit.name : "Habit not found";
       }
       return activity.name ?? "Unnamed activity";
     };
@@ -323,11 +228,11 @@ export default function SchedulerClient({
 
       setNewActivity({
         time: activity.time ?? "",
-        habitId: hasHabit ? Number(activity.habitId) : null,
-        customName: hasHabit ? "" : activity.name ?? "",
+        habit_id: hasHabit ? Number(activity.habit_id) : null,
+        customName: activity.name,
         type: activity.type,
-        progress: activity.progress?.toString() ?? "",
-        goal: activity.goal?.toString() ?? "",
+        progress: activity.progress ? activity.progress.toString() : "",
+        goal: activity.goal ? activity.goal.toString() : "",
         unit: activity.unit ?? "",
       });
     };
@@ -358,11 +263,9 @@ export default function SchedulerClient({
                   key={activity.id}
                   onClick={() => {
                     const hasHabit = 
-                      activity.habitId !== null 
-                      && activity.habitId !== undefined;
+                      activity.habit_id !== null 
+                      && activity.habit_id !== undefined;
                     startEditing(activity, hasHabit);
-                    
-                    
                   }}
                   className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition ${
                     isEditing
@@ -443,11 +346,12 @@ export default function SchedulerClient({
               <div className="lg:col-span-4">
                 <label htmlFor="select-habit">Choose From Habits (optional)</label>
                 <Select
-                  value={newActivity.habitId?.toString() ?? "none"}
+                  value={newActivity.habit_id !== null ? newActivity.habit_id.toString() : "none"}
                   onValueChange={(value) => {
+                    console.log(newActivity)
                     if (value === "none") {
                       setNewActivity((prev) => ({
-                        ...prev, habitId: null,}));
+                        ...prev, habit_id: null,}));
                       return;
                     }
                     const selected = habits.find(
@@ -456,7 +360,7 @@ export default function SchedulerClient({
                     if (!selected) return;
                     setNewActivity((prev) => ({
                       ...prev,
-                      habitId: selected.id,
+                      habit_id: selected.id,
                       customName: "",
                       type: selected.type,
                       goal: selected.goal?.toString() || "",
@@ -491,15 +395,13 @@ export default function SchedulerClient({
                     setNewActivity((prev) => ({
                       ...prev,
                       customName: e.target.value,
-                      habitId: null,
+                      habit_id: newActivity.habit_id
                     }))
                   }
-                  disabled={newActivity.habitId !== null 
-                    && newActivity.habitId !== ""
-                    && newActivity.habitId !== undefined}
-                  placeholder={newActivity.habitId !== null 
-                    && newActivity.habitId !== "" 
-                    && newActivity.habitId !== undefined? 
+                  disabled={newActivity.habit_id !== null 
+                    && newActivity.habit_id !== undefined}
+                  placeholder={newActivity.habit_id !== null 
+                    && newActivity.habit_id !== undefined ? 
                     "Habit is selected"
                     : "Enter antivity name"
                   }
@@ -612,42 +514,13 @@ export default function SchedulerClient({
   );
 }
 
-const addActivityToDB = async (
-  day: 'today' | 'tomorrow',
-  activity: ScheduledActivity
-) => {
-  try {
-    const baseDate = new Date();
-    const date =
-      day === 'today'
-        ? baseDate
-        : new Date(baseDate.setDate(baseDate.getDate() + 1));
-
-    const created = await addActivity(
-      1,
-      activity.habitId ?? null,
-      date.toISOString().split('T')[0],
-      activity.time ?? null,
-      activity.name,
-      activity.type,
-      activity.goal ?? null,
-      activity.unit ?? null,
-      activity.progress ?? null
-    );
-
-    return created;
-
-  } catch (error) {
-    console.error('Failed to add activity to DB:', error);
-  }
-};
-
-const updateActivityInDB = async (activity: ScheduledActivity) => {
+const updateActivityInDB = async (activity: ScheduledActivity, userId: string) => {
+  console.log(activity)
   try {
     const updated = await updateActivity(
       activity.id,
-      1, // userId (replace later with auth user)
-      activity.habitId ?? null,
+      userId, // userId (replace later with auth user)
+      activity.habit_id ?? null,
       activity.time ?? null,
       activity.name ?? null,
       activity.type,
@@ -660,9 +533,9 @@ const updateActivityInDB = async (activity: ScheduledActivity) => {
   }
 };
 
-const deleteActivityFromDB = async (id: number) => {
+const deleteActivityFromDB = async (id: number, userId: string) => {
   try {
-    await deleteActivity(1, id);
+    await deleteActivity(userId, id);
   } catch (error) {
     console.error("Failed to delete activity from DB:", error);
   }

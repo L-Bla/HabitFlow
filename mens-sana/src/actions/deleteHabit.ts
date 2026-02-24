@@ -5,7 +5,7 @@ import { habits } from "@/src/db/schema"
 import { and, eq } from "drizzle-orm";
 
 export default async function deleteHabit(
-    userId: number, id: number
+    userId: string, id: number
 ){
     let deletedHabit = await db.delete(habits)
         .where(and(

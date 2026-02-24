@@ -2,49 +2,11 @@
 
 import { db } from "@/src/index"
 import { charts, moodTracker, habitTracker, habits } from "@/src/db/schema"
-import { and, eq, gte, lte } from "drizzle-orm";
+import { and, eq, gte, lte, asc } from "drizzle-orm";
+import { headers } from "next/headers";
+import { auth } from "../auth";
 
 const average = array => +parseFloat(Number(array.reduce((a, b) => Number(a) + Number(b), 0)/array.length)).toFixed(2);
-
-/*function getDates(timespan: number){
-  let endDate = new Date()
-  let startDate = new Date()
-  startDate.setUTCDate(endDate.getUTCDate() - timespan)
-  return {"startDate": startDate.toISOString().slice(0, 10), 
-    "endDate": endDate.toISOString().slice(0, 10)}
-}*/
-
-function fillEnergy(rows: { x: string; energy: number }[]) {
-  if (!rows.length) return rows;
-
-  const result: { x: string; energy: number | null }[] = [];
-
-  for (let i = 0; i < rows.length - 1; i++) {
-    const current = new Date(rows[i].x);
-    const next = new Date(rows[i + 1].x);
-
-    result.push(rows[i]);
-
-    // Move to next day after current
-    const temp = new Date(current);
-    temp.setDate(temp.getDate() + 1);
-
-    // Fill all missing days
-    while (temp < next) {
-      result.push({
-        x: temp.toISOString().slice(0, 10),
-        energy: null, // or null if you prefer
-      });
-
-      temp.setDate(temp.getDate() + 1);
-    }
-  }
-
-  // Push last item
-  result.push(rows[rows.length - 1]);
-
-  return result;
-}
 
 type MetricKey = "energy" | "pleasantness" | "value";
 
@@ -127,18 +89,17 @@ function mergeByDate<
 }
 
 
-async function fetchRows(param: string){
+async function fetchRows(user_id: string, param: string){
   let rows;
   let tempRows;
-  
+
   if (param==="energy"){
     tempRows = await db
       .select({ x: moodTracker.date, energy: moodTracker.energy })
       .from(moodTracker)
-      /*.where(and(
-        gte(moodTracker.date, startDate), 
-        lte(moodTracker.date, endDate)
-      ))*/
+      .orderBy(asc(moodTracker.date))
+      .where(eq(moodTracker.user_id, user_id))
+
     rows = tempRows.map(e => {
       return {x: e.x, energy: average(e.energy)}
     });
@@ -148,10 +109,9 @@ async function fetchRows(param: string){
     tempRows = await db
       .select({ x: moodTracker.date, pleasantness: moodTracker.pleasantness })
       .from(moodTracker)
-      /*.where(and(
-        gte(moodTracker.date, startDate), 
-        lte(moodTracker.date, endDate)
-      ))*/
+      .orderBy(asc(moodTracker.date))
+      .where(eq(moodTracker.user_id, user_id))
+
     rows = tempRows.map(e => {
       return {x: e.x, pleasantness: average(e.pleasantness)}
     });
@@ -159,30 +119,58 @@ async function fetchRows(param: string){
 
   }else{
     rows = await db
-      .select({ x: habitTracker.date, [param]: habitTracker.value })
+      .select({
+        x: habitTracker.date,
+        [param]: habitTracker.value,
+      })
       .from(habitTracker)
-      /*.where(and(
-        gte(habitTracker.date, startDate), 
-        lte(habitTracker.date, endDate)
-      ))*/
+      .innerJoin(
+        habits,
+        eq(habitTracker.habit_id, habits.id)
+      )
+      .where(
+        and(
+          eq(habitTracker.user_id, user_id),
+          eq(habits.name, param)
+        )
+      )
+      .orderBy(asc(habitTracker.date));
+
      rows = fillData(rows, "value")
   }
 
   return rows;
 }
 
-async function genTitle(param1: string, param2: string | null, id1: number, id2: number | null){
+async function genTitle(user_id: string, param1: string, param2: string | null){
   let title = "";
-  if (param1==="habit"){
-    title += (await db.select({ name: habits.name }).from(habits).where(eq(habits.id, id1)))[0].name
-  }else{
+  let part;
+  if (param1==="energy" || param1==="pleasantness"){
     title += param1
+  }else{
+    part = await db
+      .select({name: habits.name})
+      .from(habits)
+      .where(and(
+        eq(habits.user_id, user_id),
+        eq(habits.name, param1)
+      ))
+      title += part[0].name
   }
-  title += " & "
-  if (param2==="habit"){
-    title += (await db.select({ name: habits.name }).from(habits).where(eq(habits.id, id2)))[0].name
-  }else if (param2){
-    title += param2
+  if (param2){
+    title += " & "
+    if (param2==="energy" || param2==="pleasantness"){
+      title += param2
+    }else{
+      part = await db
+        .select({name: habits.name})
+        .from(habits)
+        .where(and(
+          eq(habits.user_id, user_id),
+          eq(habits.name, param2)
+        ))
+      title += part[0].name
+    }
   }
 
   return title;
@@ -192,30 +180,26 @@ function genTitleTemp(){
   return "test chart"
 }
 
-export default async function createChart(userId: number, param1: string, param2: string){
-  let rows = await fetchRows(param1);
+export default async function createChart(userId: string, param1: string, param2: string){
+  
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+  if (!session){
+    throw new Error("Not logged in")
+  }
+  
+  let rows = await fetchRows(session.user.id, param1);
   let data;
   if (param2){
-    let rows2 = await fetchRows(param2)
-    /*const map = new Map<number, any>();
-    for (const r of rows) {
-      map.set(+r.x, { ...r });
-    }
-    for (const r of rows2) {
-      const key = +r.x;
-      map.set(key, {
-        ...(map.get(key) ?? { x: r.x }),
-        ...r,
-      });
-    }
-    data = Array.from(map.values()).sort((a, b) => +a.x - +b.x);*/
+    let rows2 = await fetchRows(session.user.id, param2)
     data = mergeByDate(rows, rows2)
   }else{
     data = rows;
   }
-  const title = genTitleTemp()
+  const title = await genTitle(userId, param1, param2)
 
-  let newChart = db.insert(charts).values({
+  let [newChart] = await db.insert(charts).values({
     user_id: userId,
     param1: param1,
     param2: param2,

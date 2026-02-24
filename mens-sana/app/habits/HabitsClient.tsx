@@ -9,6 +9,7 @@ import { CheckSquare, SlidersHorizontal, Trash2 } from 'lucide-react';
 import addHabit from '@/src/actions/addHabit';
 import editHabit from '@/src/actions/editHabit';
 import deleteHabit from '@/src/actions/deleteHabit';
+import { user } from '@/src/db';
 
 interface Habit {
   id: number;
@@ -19,7 +20,7 @@ interface Habit {
   unit: string | undefined;
 }
 
-export default function Habits({userHabits, }: {userHabits: Habit[];}) {
+export default function Habits({userHabits, userId}: {userHabits: Habit[]; userId: string;}) {
   const [habits, setHabits] = useState<Habit[]>(userHabits ?? []);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [newHabit, setNewHabit] = useState({
@@ -36,7 +37,7 @@ export default function Habits({userHabits, }: {userHabits: Habit[];}) {
     if (!newHabit.name) return;
 
     let habit = await addHabit(
-        1, newHabit.name,
+        userId, newHabit.name,
         newHabit.description, newHabit.type,
         newHabit.type === "amount" ? Number(newHabit.goal) : undefined,
         newHabit.type === "amount" ? newHabit.unit : undefined)  
@@ -69,10 +70,10 @@ export default function Habits({userHabits, }: {userHabits: Habit[];}) {
     if (!editingHabit || !newHabit.name) return;
 
     let habit = await editHabit(
-        1, newHabit.id, newHabit.name,
+        userId, newHabit.id, newHabit.name,
         newHabit.description, newHabit.type,
-        newHabit.type === "amount" ? Number(newHabit.goal) : undefined,
-        newHabit.type === "amount" ? newHabit.unit : undefined)  
+        newHabit.type === "amount" ? (newHabit.goal) : "",
+        newHabit.type === "amount" ? newHabit.unit : "")  
 
     setHabits((prev) =>
       prev.map((h) =>
@@ -96,12 +97,12 @@ export default function Habits({userHabits, }: {userHabits: Habit[];}) {
   async function handleDeleteHabit(){
     if (!editingHabit) return;
 
-    let deletedHabit = await deleteHabit(1, newHabit.id)
+    let deletedHabit = await deleteHabit(userId, newHabit.id)
 
     setHabits((prev) => prev.filter((h) => h.id !== editingHabit.id));
     setEditingHabit(null);
     setNewHabit({
-        id: 0,
+      id: 0,
       name: '',
       type: 'checkbox',
       description: '',

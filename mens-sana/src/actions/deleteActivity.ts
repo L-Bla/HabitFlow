@@ -7,7 +7,7 @@ import { schedule } from "../db/schema";
 /**
  * Delete activity
  */
-export async function deleteActivity(userId: number, id: number) {
+export default async function deleteActivity(userId: string, id: number) {
   try {
     await db
       .delete(schedule)

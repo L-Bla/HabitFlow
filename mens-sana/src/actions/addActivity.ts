@@ -4,8 +4,8 @@ import { db } from "@/src/index"
 import { schedule } from "@/src/db/schema"
 
 export default async function addActivity(
-    userId: number, habitId:number,
-    date: string, time: string, name: string, 
+    userId: string, habitId:number | null,
+    date: string, time: string | null, name: string, 
     type: "checkbox" | "amount", 
     goal: number | null, unit: string | null, 
     progress?: number | null

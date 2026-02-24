@@ -15,12 +15,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { GripVertical, Home, Trash2 } from "lucide-react";
 import { ChartUI } from "@/src/db/schema";
 import { Button } from "./ui/button";
+import deleteChart from "@/src/actions/deleteChart";
 
 interface Props {
   chart: ChartUI;
+  onDelete;
   index: number;
   moveChart: (from: number, to: number) => void;
 }
+
+
 
 function getMinMaxDate(chartData: ChartUI) {
   if (!chartData.data.length) {
@@ -42,7 +46,7 @@ function getMinMaxDate(chartData: ChartUI) {
 
 function getYAxisConfig(
   param: "energy" | "pleasantness" | "habit",
-  data: any[],
+  data: any[] | undefined,
   key: string
 ): {
   domain: [number, number];
@@ -57,7 +61,7 @@ function getYAxisConfig(
   }
 
   // HABIT
-  if (!data.length) {
+  if (!data || data.length===0) {
     return { domain: [0, 1], ticks: [0, 1] };
   }
 
@@ -84,27 +88,10 @@ function getYAxisConfig(
 
 export default function DraggableChart({
   chart,
-  index,
-  moveChart,
-}: Props) {
+  onDelete,
+  index
+}) {
   const ref = useRef<HTMLDivElement>(null);
-
-  const [, drag] = useDrag({
-    type: "chart",
-    item: { index },
-  });
-
-  const [, drop] = useDrop({
-    accept: "chart",
-    hover(item: { index: number }) {
-      if (item.index !== index) {
-        moveChart(item.index, index);
-        item.index = index;
-      }
-    },
-  });
-
-  drag(drop(ref));
 
   const leftAxis = getYAxisConfig(
     chart.param1,
@@ -116,29 +103,26 @@ export default function DraggableChart({
     ? getYAxisConfig(chart.param2, chart.data, chart.param2)
     : null;
 
+  async function handleDeleteChart(){
+    await deleteChart(chart.id)
+    return 
+  }
+
   return (
     <div ref={ref}>
-      <Card className="cursor-move">
+      <Card className="">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 flex-1 min-w-0">
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
             <CardTitle className="text-base">
               {chart.title}
             </CardTitle>
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <Button variant="ghost" size="icon" title="Delete">
+              <Button variant="ghost" size="icon" title="Delete"
+                onClick={() => onDelete(chart.id, chart.title)}>
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
-                <Button 
-                  variant={chart.onHome ? "default" : "ghost"} 
-                  size="icon" 
-                  title={chart.onHome ? "Remove from Home" : "Add to Home"}
-                  className={chart.onHome ? "bg-blue-600 hover:bg-blue-700" : ""}
-                >
-                  <Home className="h-4 w-4" />
-                </Button> 
               </div>
             </div>
         </CardHeader>

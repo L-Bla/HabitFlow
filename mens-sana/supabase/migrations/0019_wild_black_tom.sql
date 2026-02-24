@@ -1,1 +1,0 @@
-ALTER TABLE "charts" ADD COLUMN "data" jsonb NOT NULL;

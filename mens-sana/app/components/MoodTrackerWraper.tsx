@@ -51,7 +51,7 @@ async function fetchMoodsFromContentful(): Promise<MoodItem[]> {
   return json.data.moodCollection.items;
 }
 
-async function MoodTrackerContent() {
+async function MoodTrackerContent(userId: string) {
   const data = await fetchMoodsFromContentful();
 
   // 1️⃣ Sort by:
@@ -85,13 +85,13 @@ async function MoodTrackerContent() {
     .sort((a, b) => b - a) // ⬅️ ASC (low energy first)
     .map((energy) => grouped[energy]);
 
-  return <MoodTracker emotions={grid} />;
+  return <MoodTracker emotions={grid} userId={userId.userId}/>;
 }
 
-export function MoodTrackerWrapper() {
+export function MoodTrackerWrapper(userId: string) {
   return (
     <Suspense fallback={<MoodTrackerSkeleton />}>
-      <MoodTrackerContent />
+      <MoodTrackerContent userId={userId.userId}/>
     </Suspense>
   );
 }

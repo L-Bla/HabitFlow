@@ -1,25 +1,26 @@
-//"use client";
-
+import { redirect } from 'next/navigation';
 import { DailySchedule } from './components/DailySchedule';
-import { MoodTracker } from './components/MoodTracker';
-import { MiniAnalytics } from './components/MiniAnalytics';
-import { eq } from 'drizzle-orm';
-import { db } from '../src/index';
-import { users } from '../src/db/schema';
 import { MoodTrackerWrapper } from './components/MoodTrackerWraper';
+import { auth } from '@/src/auth';
+import { headers } from 'next/headers';
+
  
 export default async function Home() {
-  //const allUsers = await db.select().from(users)  
-  //console.log(allUsers)
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) redirect('/welcome')
+
   return (
     <div className="space-y-6">
       {/* Daily Schedule and Mood Tracker */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <DailySchedule />
+          <DailySchedule userId={session.user.id} />
         </div>
         <div className="lg:col-span-1">
-          <MoodTrackerWrapper />
+          <MoodTrackerWrapper userId={session.user.id}/>
         </div>
       </div>
     </div>

@@ -1,1 +1,0 @@
-ALTER TABLE "charts" ADD COLUMN "onHome" boolean;

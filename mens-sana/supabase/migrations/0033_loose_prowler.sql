@@ -1,1 +1,0 @@
-ALTER TABLE "schedule" ALTER COLUMN "id" SET DATA TYPE integer;

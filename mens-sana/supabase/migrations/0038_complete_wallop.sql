@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX "habit_tracker_unique" ON "habitsTracker" USING btree ("user_id","habit_id","date");

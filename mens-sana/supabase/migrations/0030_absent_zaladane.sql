@@ -1,1 +1,0 @@
-ALTER TABLE "schedule" ALTER COLUMN "time" DROP NOT NULL;

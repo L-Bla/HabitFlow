@@ -18,7 +18,7 @@ interface ScheduledActivity {
   progress?: number | null;
 }
 
-export function DailySchedule() {
+export function DailySchedule(userId: string) {
   const [activities, setActivities] = useState<any[]>([]);
   const [savedProgress, setSavedProgress] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ export function DailySchedule() {
     async function loadSchedule() {
       const today = new Date().toISOString().split("T")[0];
 
-      const data = await getScheduleForDate(1, today); // replace 1 with real userId
+      const data = await getScheduleForDate(userId.userId, today); // replace 1 with real userId
       const transformed = data.map(({progress, ...rest}) => ({
         ...rest, value: progress
       }))
@@ -65,7 +65,7 @@ export function DailySchedule() {
           : activity.value || 0,
     }));
 
-    await saveScheduleProgress(1, updates); // replace 1 with real userId
+    await saveScheduleProgress(userId.userId, updates); // replace 1 with real userId
 
     setSavedProgress(true);
     setTimeout(() => {
@@ -135,7 +135,7 @@ export function DailySchedule() {
           <Button 
             onClick={handleSave}
             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
-            Save Progress
+            {!savedProgress ? "Save Progress" : "Progress saved!"}
           </Button>
           <div
             hidden={!savedProgress}
