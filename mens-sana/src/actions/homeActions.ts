@@ -101,7 +101,6 @@ export async function saveScheduleProgress(
         },
       });
 
-        console.log(scheduleRow)
       // 3️⃣ If schedule row has a habit_id → update habitTracker
       if (scheduleRow?.habit_id) {
         await tx
