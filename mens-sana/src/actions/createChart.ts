@@ -155,22 +155,23 @@ async function genTitle(user_id: string, param1: string, param2: string | null){
       ))
       title += part[0].name
   }
-  
-  if (param2 != "none" && param2 != ""){
-    title += " & "
-    if (param2==="energy" || param2==="pleasantness"){
-      title += param2
-    }else{
-      part = await db
-        .select({name: habits.name})
-        .from(habits)
-        .where(and(
-          eq(habits.user_id, user_id),
-          eq(habits.name, param2)
-        ))
-      title += part[0].name
+  if (param2){
+    if (param2 != "none" && param2 != ""){
+      title += " & "
+      if (param2==="energy" || param2==="pleasantness"){
+        title += param2
+      }else{
+        part = await db
+          .select({name: habits.name})
+          .from(habits)
+          .where(and(
+            eq(habits.user_id, user_id),
+            eq(habits.name, param2)
+          ))
+        title += part[0].name
+      }
     }
-  }
+}
 
   return title;
 }
