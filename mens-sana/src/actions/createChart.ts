@@ -155,7 +155,7 @@ async function genTitle(user_id: string, param1: string, param2: string | null){
       ))
       title += part[0].name
   }
-  if (param2 != "none"){
+  if (param2 != "none" && param2 != null){
     title += " & "
     if (param2==="energy" || param2==="pleasantness"){
       title += param2
