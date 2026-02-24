@@ -28,7 +28,7 @@ export function DailySchedule({userId, }: {userId: string;}) {
 
       const data = await getScheduleForDate(userId, today); // replace 1 with real userId
       const transformed = data.map(({progress, ...rest}) => ({
-        ...rest, value: progress
+        ...rest, progress: progress
       }))
       setActivities(transformed);
     }
