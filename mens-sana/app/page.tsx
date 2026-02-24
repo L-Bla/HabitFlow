@@ -17,7 +17,7 @@ export default async function Home() {
       {/* Daily Schedule and Mood Tracker */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <DailySchedule userId={session.user.id} />
+          <DailySchedule userId={session.user.id} userName={session.user.name}/>
         </div>
         <div className="lg:col-span-1">
           <MoodTrackerWrapper userId={session.user.id}/>

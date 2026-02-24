@@ -18,7 +18,7 @@ interface ScheduledActivity {
   progress?: number | null;
 }
 
-export function DailySchedule({userId, }: {userId: string;}) {
+export function DailySchedule({userId, userName}: {userId: string; userName: string}) {
   const [activities, setActivities] = useState<any[]>([]);
   const [savedProgress, setSavedProgress] = useState<boolean>(false);
 
@@ -89,7 +89,7 @@ export function DailySchedule({userId, }: {userId: string;}) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Daily Schedule</CardTitle>
+        <CardTitle>{userName}'s Daily Schedule</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
