@@ -22,7 +22,7 @@ Pri izradi projekta, na umu su bili principi dizajna obrađivani na predavanjim.
 ---
 
 #### Visibility:
-Nakon prijave, korisnik je odveden na Home page s rasporedom na kojem poiše njegovo ime. Pri odabiru tipa aktivnosti, prilikom klika na jedan gumb (Checkbox/Amount), on poplavi, a drugi izblijedi pa korisnik zna u kojem je stanju taj dio sustava. Ako u rasporedu nem aaktivnosti, piše da ih nema, kako korisnik ne bi pomislio da se aktivnosti nisu učitale ili nešto slično.
+Nakon prijave, korisnik je odveden na Home page s rasporedom na kojem piše njegovo ime. Ako u rasporedu nema aktivnosti, piše da ih nema, kako korisnik ne bi pomislio da se aktivnosti nisu učitale ili nešto slično.
 
 #### Feedback:
 Pri dodavanju aktivnosti u raspored, novih navika ili crtanja grafova, nakon pritiska gumba, novi se objekt pojavi, a da korisnik ne mora ručno osvježiti stranicu. Također, svaki gumb malo potamni na :hover.
@@ -41,7 +41,7 @@ External: jedine opcije obojane crveno su one za brisanje objekata, što se podu
 Sve su kartice naslovljene, baš kao i sva polja za odabire, tako da i ako korsnik nema puno prijašnjeg znanja, može pročitati što je što i čemu služi.
 
 #### Mental models:
-Nadovezujući se na prijašnju točku, polja za odabir, gumbi, navbar izgladaju kao i u većini drugih aplikacija. U svakom polju za odabir, prije unosa ičega, sivim je slovima upisan primjer ili uputa za podatak koji tu dolazi, tako da korisnik zna da to nije pravi podatak.
+Nadovezujući se na prijašnju točku, polja za odabir, gumbi, navbar izgladaju kao i u mnogim drugim aplikacijama. U svakom polju za odabir, prije unosa ičega, sivim je slovima upisan primjer ili uputa za podatak koji tu dolazi, tako da korisnik zna da to nije pravi podatak.
 Pretpostavka je da će korisnik razviti interni mentalni model: ako ga dočeka Landing page, znat će da nije prijavljen, a ako ga dočeka Home page, znat će da je. 
 Ta značajka ima još jednu prednost - Landing page je koristan samo potencijalnim korisnicima, a postojećim bi samo smetalo kad bi svaki put kad bi htjeli nešto zabilježiti imali dodatnu nepotrebnu akciju koji moraju obaviti.
 
@@ -65,7 +65,7 @@ Raspoloženje se bilježi kao dva broja (energija i ugoda). MoodTracker komponen
 Opcije su u svim komponentama iste i dobro poznate: Add, Update, Delete, Cancel, Save.
 
 #### Visibility of system status:
-Nakon spremanja napretka ili raspoloženja na Home, Save gumb izblijedi na tri sekunde, natpis mu se promjeni u "Saved" i pojavi se kvačica. Također, korisnik uvijek zna na kojoj je stranici jer je njeno ime uokvireno u navbaru. Ako dohvat podataka iz CMS-a traje preduga, implementiran je Suspense.
+Nakon spremanja napretka ili raspoloženja na Home, Save gumb izblijedi na tri sekunde, natpis mu se promjeni u "Saved" i pojavi se kvačica. Također, korisnik uvijek zna na kojoj je stranici jer je njeno ime uokvireno u navbaru. Ako dohvat podataka iz CMS-a traje predugo, implementiran je Suspense.
 
 #### User control and freedom:
 Sve kartice za unos imaju gumb Cancel. Prije brisanja grafa, pojavi se Alert koji objašnjava što slijedi i traži potvrdu. To je bilo nužno implementirati jer je gumb za brisanje na svakom grafu i može ga se slučajno pritisnuti. Sve što se doda, može se i obrisati (što će korisnik shvatiti pri prvom uređivanju neke aktivnosti/navike.)
@@ -78,13 +78,13 @@ Ako nije uneseno ime aktivnosti, niti odabrana navika, aplikacija, u prigodnoj c
 Dizajnirana je posebna 404 stranica koja, iako nije ni smiješna ni pametna, ipak neće dati korisniku osjećaj da se izgubio u nekom primitivnom, ogoljenom zakutku interneta, nego da je još "negdje blizu."
 
 #### Recognition rather than recall:
-Ako je tip aktivnosti Checkbox, Goal i Unit polja su onemogućena, ali svejedno prikazana pa korisnik zna da ima tu mogućnost ako odabere Amount. Također, prilikom uređivanja navike, svi su podatci upisani u pripadajućim poljima i korisnik na jedom mjestu može i saznati i promijeniti informaciju.
+Ako je tip aktivnosti Checkbox, Goal i Unit polja su onemogućena, ali svejedno prikazana pa korisnik zna da ima tu mogućnost ako odabere Amount. Također, prilikom uređivanja navike, svi su podatci upisani u pripadajućim poljima i korisnik na jednom mjestu može i saznati i promijeniti informaciju.
 
 #### Flexibility and efficiency of use:
-Iako nije izvorno tome bila namjenjana, značajka navika pokazala se kao dobar prečac - ako korisnik često planira istu aktivnost, umjesto da svaki put upisuje njeno ime, tip i dodatne parametre ako su potrebni, može samo stvoriti naviku i odabrati je.
+Iako nije izvorno tome bila namjenjana, značajka navika pokazala se kao dobar prečac - ako korisnik često planira istu aktivnost, umjesto da svaki put upisuje njeno ime, tip i dodatne parametre ako su potrebni, može samo stvoriti naviku i odabirati je.
 
 #### Aesthetic and minimalist design:
-Stranica je dizajnirana primarno s ovim principom na umu. Ljudi se teško drže odluka i teško stvaraju navike, a ova aplikacija živi od stalnih korisnika. Kads bi se, uz dovoljan napor planiranja i praćenja svojih aktivnosti, korisnici morali i fokusirati da na stranici pronađu neku opciju, ili tumačiti što koji gumb znači, ili samo naprezati oči da bi uopće odvojili ono funkcionalno na stranici od onog isključivo estetskog, aplikacija ne bi zaživila.
+Stranica je dizajnirana primarno s ovim principom na umu. Ljudi se teško drže odluka i teško stvaraju navike, a ova aplikacija živi od stalnih korisnika. Kada bi se, uz dovoljan napor planiranja i praćenja svojih aktivnosti, korisnici morali i fokusirati da na stranici pronađu neku opciju, ili tumačiti što koji gumb znači, ili samo naprezati oči da bi uopće odvojili ono funkcionalno na stranici od onog isključivo estetskog, aplikacija ne bi zaživila.
 
 #### Help and documentation:
 Kako je već spomenuto, svako je polje naslovljeno i u njemu upisan primjer ili uputa.
@@ -103,7 +103,7 @@ Svi su gumbi istog oblika, boje i ponašanja: Add/Update/Edit - plava, Delete - 
 Koristi se pravilna raspodjela na polovice ili trećine ekrana po dužini (ne rečunajući margine.)
 
 #### Proximity:
-Za svrstavanje stvari primarno služe granice, a načelo bliskosti primjenjeno je na unutarkartičnoj razini: U Add New Activity jasna je vizualna hijerarhija: prvo odabiremo ime i vrijeme, pogledom prelazimo u novi red da odaberemo tip pa opet u novi red da unesemo dodatne parametre. Nakon toga: u novom su redu gumbi za dodavanje.
+Za svrstavanje stvari primarno služe granice, koje nemaju smisla ako ne zaokružuju bliske objekte. Načelo bliskosti primjenjeno je i na unutarkartičnoj razini: U Add New Activity jasna je vizualna hijerarhija: prvo odabiremo ime i vrijeme, pogledom prelazimo u novi red da odaberemo tip pa opet u novi red da unesemo dodatne parametre. Nakon toga: u novom su redu gumbi za dodavanje.
 
 
 
