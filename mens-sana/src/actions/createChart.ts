@@ -116,7 +116,7 @@ async function fetchRows(user_id: string, param: string){
     rows = fillData(rows, "pleasantness")
 
   }else{
-    rows = await db
+    tempRows = await db
       .select({
         x: habitTracker.date,
         value: habitTracker.value,
@@ -134,7 +134,12 @@ async function fetchRows(user_id: string, param: string){
       )
       .orderBy(asc(habitTracker.date));
 
-     rows = fillData(rows, "value")
+     tempRows = fillData(tempRows, "value")
+     rows = tempRows.map(({ value, ...rest }) => ({
+        ...rest,
+        [param]: value
+      }));
+      console.log(rows)
   }
 
   return rows;

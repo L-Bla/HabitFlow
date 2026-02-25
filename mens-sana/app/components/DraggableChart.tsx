@@ -55,7 +55,7 @@ function getMinMaxDate(chartData: ChartUI) {
 /* ---------------------------------- */
 
 function getYAxisConfig(
-  param: "energy" | "pleasantness" | "habit",
+  param: "energy" | "pleasantness" | "value",
   data: any[] | undefined,
   key: string
 ): {
@@ -104,16 +104,16 @@ export default function DraggableChart({
   const ref = useRef<HTMLDivElement>(null);
 
   const leftAxis = getYAxisConfig(
-    chart.param1 as "energy" | "pleasantness" | "habit",
+    chart.param1 as "energy" | "pleasantness" | "value",
     chart.data,
     chart.param1
   );
 
   const rightAxis = chart.param2
-    ? getYAxisConfig(chart.param2 as "energy" | "pleasantness" | "habit", chart.data, chart.param2)
+    ? getYAxisConfig(chart.param2 as "energy" | "pleasantness" | "value", chart.data, chart.param2)
     : null;
 
-  async function handleDeleteChart(){
+    async function handleDeleteChart(){
     await deleteChart(chart.id)
     return 
   }
