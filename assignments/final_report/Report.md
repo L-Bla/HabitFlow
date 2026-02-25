@@ -1,5 +1,8 @@
-# HabitFlow
-## Izvještaj
+# HabitFlow - Izvještaj
+<br>
+
+[https://habitflow-go.vercel.app](https://habitflow-go.vercel.app/)
+<br>
 
 HabitFlow je web aplikacija namijenjena za planiranje dnevnih aktivnosti (Habits, Scheduler), praćenja raspoloženja (MoodTrackr) te analizu tih podataka (Analytics.) 
 Prvotna je ideja bila napraviti aplikaciju koja će pratiti navike i raspoloženja, s raznim mogućnostima za njihovu analizu (više vrsta grafova za predodžbu korelacija, detaljnije praćenje raspoloženja), no provevši card sorting metode s generiranim personama ([Assignment2](../Assignment2)) naglasak je prebačen s proučavanja na planiranje.
