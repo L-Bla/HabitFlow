@@ -3,11 +3,7 @@
 
 HabitFlow je web aplikacija namijenjena za planiranje dnevnih aktivnosti (Habits, Scheduler), praćenja raspoloženja (MoodTrackr) te analizu tih podataka (Analytics.) 
 Prvotna je ideja bila napraviti aplikaciju koja će pratiti navike i raspoloženja, s raznim mogućnostima za njihovu analizu (više vrsta grafova za predodžbu korelacija, detaljnije praćenje raspoloženja), no provevši card sorting metode s generiranim personama ([Assignment2](../Assignment2)) naglasak je prebačen s proučavanja na planiranje.
-Nakon utvrđivanja značajki koje aplikacija podržava, koristeći Figmu, istraženo je više dizajna, kako bi se sa sigurnošću moglo krenuti u izradu cjelovite aplikacije:
-<img alt="Low Fidelity Prototype" src="./Low Fidelity Prototype.png" width="50%" />
-<img alt="High Fidelity Prototype 1" src="./High Fidelity Prototype 1.png" width="50%" />
-<img alt="High Fidelity Prototype 2" src="./High Fidelity Prototype 2.png" width="50%" />
-<img alt="High Fidelity Prototype 3" src="./High Fidelity Prototype 3.png" width="50%" />
+Nakon utvrđivanja značajki koje aplikacija podržava, koristeći Figmu, istraženo je više [dizajna](./), kako bi se sa sigurnošću moglo krenuti u izradu cjelovite aplikacije.
 
 Aplikacija je spojena sa supabaseom.
 Podržano je logiranje. 
