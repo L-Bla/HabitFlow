@@ -2,6 +2,7 @@
 
 - Link to your production version: [**Production Version**](https://habitflow-go.vercel.app/) <!-- Replace with actual URL -->
 - Link to your final report: [**Final Report**](./assignments/final_report/Report.md) <!-- Replace with actual URL -->
+- Link to video demo: [**Video Demonstration**](./assignments/final_report/video_demo.webm)
 <!-- Add more as necessary -->
 
 ### Semester Assignments
