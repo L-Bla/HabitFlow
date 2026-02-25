@@ -45,16 +45,16 @@ Nadovezujući se na prijašnju točku, polja za odabir, gumbi, navbar izgladaju 
 Pretpostavka je da će korisnik razviti interni mentalni model: ako ga dočeka Landing page, znat će da nije prijavljen, a ako ga dočeka Home page, znat će da je. 
 Ta značajka ima još jednu prednost - Landing page je koristan samo potencijalnim korisnicima, a postojećim bi samo smetalo kad bi svaki put kad bi htjeli nešto zabilježiti imali dodatnu nepotrebnu akciju koji moraju obaviti.
 
-<br>
+
 ### Fitts' law:
 ---
 Ispoštovan jasnim označivanjem granica gumbova, aktivnosti i raspoloženja, njihovim rastezanjem i više od samih natpisa u njima, te zatamljenjem pri hoveru (važno u navbaru). Također, kartice su poslagane jedna do druge po sredini stranice, tako da nema prevelikog puta između opcija.
 
 ### Hick's law i osvrt na korisničku populaciju:
 ---
-Promatrajući prijašnje dizajne stranica, da se zaključiti da su neke značajke izbačene. Osim ograničenosti resursa (poglavito vremena), glavni razlog tome je korisnici kojima je aplikacija namjenjena. Njen izvorni dizajn i funkcionalnost odražava njenog tvorca, to jest pretpostavlja upoznatost s i entuzijazam za sustavno bilježenje i uređivanje, prikaz i proučavanje statističkih podataka, a od 2 od 3 gnerirane persone (ni prosječnog čovjeka) to se ne može očekivati.
+Promatrajući prijašnje dizajne stranica, da se zaključiti da su neke značajke izbačene. Osim ograničenosti resursa (poglavito vremena), glavni razlog tome korisnici su kojima je aplikacija namjenjena. Njen izvorni dizajn i funkcionalnost odražava njenog tvorca, to jest pretpostavlja upoznatost s i entuzijazam za sustavno bilježenje i uređivanje, prikaz i proučavanje statističkih podataka, a od 2 od 3 gnerirane persone (ni prosječnog čovjeka) to se ne može očekivati. Zato su izbačeni dodatni parametri pri crtanju grafa, raspoloženje svedeno na dva parametra i to prikazana relativno intuitivnom mrežom. Pazilo se i o drugoj krajnosti - odveć minimalnom dizajnu. Primjer su toga dva tipa aktivnosti - u teoriji je mogao biti samo jedan pa da što je trenutno Checkbox postane amount s goal:1.
 
-<br>
+
 ### Usability heuristics:
 ---
 
@@ -89,7 +89,7 @@ Stranica je dizajnirana primarno s ovim principom na umu. Ljudi se teško drže 
 #### Help and documentation:
 Kako je već spomenuto, svako je polje naslovljeno i u njemu upisan primjer ili uputa.
 
-<br>
+
 ### CRAP
 ---
 
