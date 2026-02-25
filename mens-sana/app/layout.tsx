@@ -23,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
+      <title>HabitFlow</title>
       <body className="min-h-screen bg-background">
         {/* Navbar */}
         <nav className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">

@@ -93,7 +93,7 @@ export function DailySchedule({userId, userName}: {userId: string; userName: str
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {sortedActivities.map((activity) => (
+          {sortedActivities.length > 0 ? sortedActivities.map((activity) => (
             <div
               key={activity.id}
               className="flex flex-col sm:flex-row sm:items-center gap-2 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
@@ -129,7 +129,7 @@ export function DailySchedule({userId, userName}: {userId: string; userName: str
                 </div>
               )}
             </div>
-          ))}
+          )) : <div className="text-muted-foreground">No activities scheduled for today.</div>}
         </div>
         <div className="flex flex-col sm:flex-row justify-end items-center gap-2 m-4 mr-0">
           <Button 
