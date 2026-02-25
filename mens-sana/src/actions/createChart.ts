@@ -139,7 +139,6 @@ async function fetchRows(user_id: string, param: string){
         ...rest,
         [param]: value
       }));
-      console.log(rows)
   }
 
   return rows;
