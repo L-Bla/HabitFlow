@@ -10,8 +10,13 @@ Podržano je logiranje.
 Contentful se koristi za uređivanje emojija i imena osjećaja u MoodTrackeru.
 
 Pri izradi projekta, na umu su bili principi dizajna obrađivani na predavanjim. Evo kako su implementirani:
+<br>
+<br>
+<br>
+
 
 ### Basic design principles:
+---
 
 #### Visibility:
 Nakon prijave, korisnik je odveden na Home page s rasporedom na kojem poiše njegovo ime. Pri odabiru tipa aktivnosti, prilikom klika na jedan gumb (Checkbox/Amount), on poplavi, a drugi izblijedi pa korisnik zna u kojem je stanju taj dio sustava. Ako u rasporedu nem aaktivnosti, piše da ih nema, kako korisnik ne bi pomislio da se aktivnosti nisu učitale ili nešto slično.
@@ -39,13 +44,16 @@ Ta značajka ima još jednu prednost - Landing page je koristan samo potencijaln
 
 
 ### Fitts' law:
+---
 Ispoštovan jasnim označivanjem granica gumbova, aktivnosti i raspoloženja, njihovim rastezanjem i više od samih natpisa u njima, te zatamljenjem pri hoveru (važno u navbaru). Također, kartice su poslagane jedna do druge po sredini stranice, tako da nema prevelikog puta između opcija.
 
 ### Hick's law i osvrt na korisničku populaciju:
+---
 Promatrajući prijašnje dizajne stranica, da se zaključiti da su neke značajke izbačene. Osim ograničenosti resursa (poglavito vremena), glavni razlog tome je korisnici kojima je aplikacija namjenjena. Njen izvorni dizajn i funkcionalnost odražava njenog tvorca, to jest pretpostavlja upoznatost s i entuzijazam za sustavno bilježenje i uređivanje, prikaz i proučavanje statističkih podataka, a od 2 od 3 gnerirane persone (ni prosječnog čovjeka) to se ne može očekivati.
 
 
 ### Neke usability heuristike su već prekrivene principima dizajna - slijede nespomenute:
+---
 
 #### Match between system and the real world:
 Raspoloženje se bilježi kao dva broja (energija i ugoda). MoodTracker komponenta dizajnirana je tako da korisnik ne mora prevoditi ono što osjeća u ta dva broja, nego može samo odabrati osjećaj (koji je k tome prikazan emojijem.) Time se gubi fleksibilnost, ali dobija jednostvanost
@@ -79,6 +87,7 @@ Stranica je dizajnirana primarno s ovim principom na umu. Ljudi se teško drže 
 Kako je već spomenuto, svako je polje naslovljeno i u njemu upisan primjer ili uputa.
 
 ### CRAP
+---
 
 #### Contrast:
 Gumbi koji okidaju kontakt s bazom podataka (korisnikovim jezikom: gumbi koji dodaju/uređuju/brišu nešto) jedini su objekti obojani solid bojom. Njihova je važnost vizualno istaknuta. Također, sve su kartice uokvirene tankom sivom crtom, što korisniku govori što čemu pripada bez da privlači neportebnu pozornost na tu podjelu.
