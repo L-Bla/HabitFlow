@@ -12,3 +12,8 @@
 - Link to Assignment 4: [**Assignment 4**](assignments/Assignment4/HighFidelityPrototype-mens-sana.png)
 - Link to Assignment 5 (Deployed webapp): [**https://mens-sana.vercel.app/**](https://mens-sana.vercel.app/)
 <!-- Add more assignments as necessary -->
+
+<br>
+<br>if you want to see how the app looks like with data tracked over few weeks:
+<br>email: adalbert.007@email.com
+<br>password: password1
