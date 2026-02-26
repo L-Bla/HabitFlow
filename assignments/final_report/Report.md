@@ -10,7 +10,7 @@ Nakon utvrđivanja značajki koje aplikacija podržava, koristeći Figmu, istra�
 
 Aplikacija je spojena sa supabaseom.
 Podržano je logiranje. 
-Contentful se koristi za uređivanje emojija i imena osjećaja u MoodTrackeru.
+Contentful se koristi za uređivanje emojija i respoloženja u MoodTrackeru.
 
 Pri izradi projekta, na umu su bili principi dizajna obrađivani na predavanjim. Evo kako su implementirani:
 <br>
@@ -65,7 +65,7 @@ Raspoloženje se bilježi kao dva broja (energija i ugoda). MoodTracker komponen
 Opcije su u svim komponentama iste i dobro poznate: Add, Update, Delete, Cancel, Save.
 
 #### Visibility of system status:
-Nakon spremanja napretka ili raspoloženja na Home, Save gumb izblijedi na tri sekunde, natpis mu se promjeni u "Saved" i pojavi se kvačica. Također, korisnik uvijek zna na kojoj je stranici jer je njeno ime uokvireno u navbaru. Ako dohvat podataka iz CMS-a traje predugo, implementiran je Suspense.
+Tijekom spremanja i sličnih operacija, gumb se onemogući i premjeni natpis iz, na primjer "Save" u "Saving...". Također, korisnik uvijek zna na kojoj je stranici jer je njeno ime uokvireno u navbaru. Ako dohvat podataka iz CMS-a ili aktivnosti za raspored traje predugo - implementiran je Suspense.
 
 #### User control and freedom:
 Sve kartice za unos imaju gumb Cancel. Prije brisanja grafa, pojavi se Alert koji objašnjava što slijedi i traži potvrdu. To je bilo nužno implementirati jer je gumb za brisanje na svakom grafu i može ga se slučajno pritisnuti. Sve što se doda, može se i obrisati (što će korisnik shvatiti pri prvom uređivanju neke aktivnosti/navike.)
