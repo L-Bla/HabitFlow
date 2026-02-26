@@ -5,6 +5,18 @@ import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { useFormStatus } from "react-dom";
+
+
+function SignUpSubmitButton() {
+    const { pending } = useFormStatus();
+
+    return (
+        <Button type="submit" disabled={pending}>
+            {pending ? "Signing up..." : "Sign up"}
+        </Button>
+    );
+}
 
 
 export default function SignUp(){
@@ -22,7 +34,7 @@ export default function SignUp(){
                         <Input type="email" id="email" name="email" placeholder="example@email.com" required/>
                         <Label htmlFor="password">Password</Label>
                         <Input type="password" id="password" name="password" placeholder="Enter your password here" required/>
-                        <Button type="submit">Sign up</Button>
+                        <SignUpSubmitButton />
                     </form>
                     <div>Already have an account? <a href="/signin" className="hover:underline text-blue-500">Sign in</a>!</div>
                 </CardContent>

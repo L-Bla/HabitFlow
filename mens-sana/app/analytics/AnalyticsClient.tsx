@@ -4,7 +4,7 @@ import { charts, ChartUI } from "@/src/db/schema";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import DraggableChart from "../components/DraggableChart";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { GripVertical, Archive, Trash2, Home, LineChart } from "lucide-react";
 import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { Button } from "../components/ui/button";
@@ -30,6 +30,8 @@ export default function AnalyticsClient(props: Props){
   const [param1, setParam1] = useState('');
   const [param2, setParam2] = useState('');
   const [timespan, setTimespan] = useState('');
+  const [isCreatingChart, startCreatingChartTransition] = useTransition();
+  const [isDeletingChart, setIsDeletingChart] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [chartToDelete, setChartToDelete] = useState<{id: string, title: string} | null>(null);
 
@@ -39,26 +41,34 @@ export default function AnalyticsClient(props: Props){
   };
 
   const handleConfirmDelete = async () => {
-    if (!chartToDelete) return;
+    if (!chartToDelete || isDeletingChart) return;
 
-    await deleteChart(chartToDelete.id);
+    try {
+      setIsDeletingChart(true);
+      await deleteChart(chartToDelete.id);
 
-    setCharts(prev =>
-      prev.filter(c => c.id !== chartToDelete.id)
-    );
+      setCharts(prev =>
+        prev.filter(c => c.id !== chartToDelete.id)
+      );
 
-    setShowConfirm(false);
-    setChartToDelete(null);
+      setShowConfirm(false);
+      setChartToDelete(null);
+    } finally {
+      setIsDeletingChart(false);
+    }
   };
 
   const handleCancelDelete = () => {
+    if (isDeletingChart) return;
     setShowConfirm(false);
     setChartToDelete(null);
   };
 
-  async function handleDrawNewGraph(){
-    let chart = await createChart(props.session!.user.id, param1, param2)
-    setCharts(prev => ([...prev, { ...chart, id: String(chart.id) } as ChartUI]))
+  function handleDrawNewGraph(){
+    startCreatingChartTransition(async () => {
+      let chart = await createChart(props.session!.user.id, param1, param2)
+      setCharts(prev => ([...prev, { ...chart, id: String(chart.id) } as ChartUI]))
+    })
     return
   }
 
@@ -123,8 +133,8 @@ export default function AnalyticsClient(props: Props){
             </div>
 
             <div className="flex items-end">
-              <Button onClick={handleDrawNewGraph} disabled={!param1} className="w-full bg-blue-600 hover:bg-blue-700">
-                Draw
+              <Button onClick={handleDrawNewGraph} disabled={!param1 || isCreatingChart} className="w-full bg-blue-600 hover:bg-blue-700">
+                {isCreatingChart ? "Drawing..." : "Draw"}
               </Button>
             </div>
           </div>
@@ -150,6 +160,7 @@ export default function AnalyticsClient(props: Props){
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={handleCancelDelete}
+                disabled={isDeletingChart}
                 className="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition"
               >
                 Cancel
@@ -157,9 +168,10 @@ export default function AnalyticsClient(props: Props){
 
               <button
                 onClick={handleConfirmDelete}
+                disabled={isDeletingChart}
                 className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
               >
-                Delete
+                {isDeletingChart ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>

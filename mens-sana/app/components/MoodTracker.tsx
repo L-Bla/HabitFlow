@@ -16,6 +16,7 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
   const [currentTime, setCurrentTime] = useState(new Date());  
   const [scheduleItems, setScheduleItems] = useState<any[]>([]);
   const [savedProgress, setSavedProgress] = useState<boolean>(false);
+  const [isSavingEntry, setIsSavingEntry] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,7 +35,7 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
   };
 
   const handleSaveEntry = async () => {
-    if (!selectedCell) return;
+    if (!selectedCell || isSavingEntry) return;
 
     const energy = 4 - selectedCell.row; 
     let pleasantness;
@@ -44,16 +45,22 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
     else if (col === 2) pleasantness = 2;
     else pleasantness = 4;
 
-    await saveEntry({
-      userId: userId, // replace with real user
-      energy,
-      pleasantness,
-    });
+    try {
+      setIsSavingEntry(true);
 
-    setLastEntry(new Date());
-    setSelectedCell(null);
-    setSavedProgress(true);
-    setTimeout(() => setSavedProgress(false), 3000);
+      await saveEntry({
+        userId: userId, // replace with real user
+        energy,
+        pleasantness,
+      });
+
+      setLastEntry(new Date());
+      setSelectedCell(null);
+      setSavedProgress(true);
+      setTimeout(() => setSavedProgress(false), 3000);
+    } finally {
+      setIsSavingEntry(false);
+    }
   };
 
   const getTimeSinceLastEntry = () => {
@@ -127,9 +134,9 @@ export function MoodTracker({emotions, userId}: {emotions: Emotion[][]; userId: 
         {/* Save Button and Current Time */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
           <Button onClick={handleSaveEntry} 
-            disabled={!selectedCell} 
+            disabled={!selectedCell || isSavingEntry} 
             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
-            {!savedProgress ? "Save Progress" : "Progress saved!"}
+            {isSavingEntry ? "Saving..." : !savedProgress ? "Save" : "Saved!"}
           </Button>
           <div
             hidden={!savedProgress}

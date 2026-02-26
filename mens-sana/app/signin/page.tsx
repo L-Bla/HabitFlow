@@ -5,6 +5,18 @@ import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { useFormStatus } from "react-dom";
+
+
+function SignInSubmitButton() {
+    const { pending } = useFormStatus();
+
+    return (
+        <Button type="submit" disabled={pending}>
+            {pending ? "Signing in..." : "Sign in"}
+        </Button>
+    );
+}
 
 
 export default function SignIp(){
@@ -20,7 +32,7 @@ export default function SignIp(){
                         <Input type="email" id="email" name="email" placeholder="example@email.com" required/>
                         <Label htmlFor="password">Password</Label>
                         <Input type="password" id="password" name="password" placeholder="Enter your password here" required/>
-                        <Button type="submit">Sign in</Button>
+                        <SignInSubmitButton />
                     </form>
                     <div>Don't have an account? <a href="/signup" className="hover:underline text-blue-500">Sign up</a>!</div>
                 </CardContent>

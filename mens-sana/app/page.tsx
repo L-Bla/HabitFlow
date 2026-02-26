@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation';
-import { DailySchedule } from './components/DailySchedule';
+import { DailyScheduleWrapper } from './components/DailyScheduleWrapper';
 import { MoodTrackerWrapper } from './components/MoodTrackerWraper';
 import { auth } from '@/src/auth';
 import { headers } from 'next/headers';
+import { Suspense } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 
  
 export default async function Home() {
@@ -17,7 +19,20 @@ export default async function Home() {
       {/* Daily Schedule and Mood Tracker */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <DailySchedule userId={session.user.id} userName={session.user.name}/>
+          <Suspense
+            fallback={
+              <Card>
+                <CardHeader>
+                  <CardTitle>{session.user.name}'s Daily Schedule</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-muted-foreground">Waiting for activities...</div>
+                </CardContent>
+              </Card>
+            }
+          >
+            <DailyScheduleWrapper userId={session.user.id} userName={session.user.name}/>
+          </Suspense>
         </div>
         <div className="lg:col-span-1">
           <MoodTrackerWrapper userId={session.user.id}/>

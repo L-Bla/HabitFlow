@@ -5,6 +5,18 @@ import { Button } from "../components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { useFormStatus } from "react-dom";
+
+
+function SignOutSubmitButton() {
+    const { pending } = useFormStatus();
+
+    return (
+        <Button type="submit" disabled={pending}>
+            {pending ? "Signing out..." : "Sign out"}
+        </Button>
+    );
+}
 
 
 export default function LogOut({session}:{session: Awaited<ReturnType<typeof import("@/src/auth").auth.api.getSession>>}) {
@@ -23,7 +35,7 @@ export default function LogOut({session}:{session: Awaited<ReturnType<typeof imp
                     </div>
                     <div className="flex flex-row items-end justify-end mt-5">
                         <form action={signOutAction}>
-                            <Button type="submit">Sign out</Button>
+                            <SignOutSubmitButton />
                         </form>
                     </div>
                 </CardContent>
