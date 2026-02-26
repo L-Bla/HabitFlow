@@ -2,7 +2,7 @@
 
 - Link to your production version: [**Production Version**](https://habitflow-go.vercel.app/) <!-- Replace with actual URL -->
 - Link to your final report: [**Final Report**](./assignments/final_report/Report.md) <!-- Replace with actual URL -->
-- Link to video demo: [**Video Demonstration**](./assignments/final_report/video_demo.webm)
+- Link to video demo: [**Video Demonstration**](./assignments/final_report/demo2.webm)
 <!-- Add more as necessary -->
 
 ### Semester Assignments
@@ -15,6 +15,6 @@
 <!-- Add more assignments as necessary -->
 
 #### Demo account
-if you want to see how the app looks like with data tracked over few weeks:
+if you want to see how the app looks like with data tracked over a few weeks:
 - email: adalbert.007@email.com
 - password: password1
