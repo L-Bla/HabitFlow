@@ -22,6 +22,7 @@ interface Habit {
 export default function Habits({userHabits, userId}: {userHabits: Habit[]; userId: string}) {
   const [habits, setHabits] = useState<Habit[]>(userHabits ?? []);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [pendingAction, setPendingAction] = useState<"adding" | "updating" | "deleting" | null>(null);
   const [newHabit, setNewHabit] = useState({
     id: 0,
     name: '',
@@ -33,24 +34,30 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
   const isAmount = newHabit.type === "amount";
 
   async function handleAddHabit(){
-    if (!newHabit.name) return;
+    if (!newHabit.name || pendingAction) return;
 
-    let habit = await addHabit(
-        userId, newHabit.name,
-        newHabit.description, newHabit.type,
-        newHabit.type === "amount" ? Number(newHabit.goal) : null,
-        newHabit.type === "amount" ? newHabit.unit : null ) 
+    setPendingAction("adding");
 
-    setHabits((prev) => [...prev, habit as Habit]);
+    try {
+      let habit = await addHabit(
+          userId, newHabit.name,
+          newHabit.description, newHabit.type,
+          newHabit.type === "amount" ? Number(newHabit.goal) : null,
+          newHabit.type === "amount" ? newHabit.unit : null ) 
 
-    setNewHabit({
-        id: 0,
-      name: '',
-      type: 'checkbox',
-      description: '',
-      goal: "",
-      unit: ""
-    });
+      setHabits((prev) => [...prev, habit as Habit]);
+
+      setNewHabit({
+          id: 0,
+        name: '',
+        type: 'checkbox',
+        description: '',
+        goal: "",
+        unit: ""
+      });
+    } finally {
+      setPendingAction(null);
+    }
   };
 
   const handleSelectHabit = (habit: Habit) => {
@@ -66,55 +73,67 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
   };
 
   async function handleUpdateHabit(){
-    if (!editingHabit || !newHabit.name) return;
+    if (!editingHabit || !newHabit.name || pendingAction) return;
 
-    let habit = await editHabit(
-        userId, newHabit.id, newHabit.name,
-        newHabit.description, newHabit.type,
-        newHabit.type === "amount" ? Number(newHabit.goal).toString() : null,
-        newHabit.type === "amount" ? newHabit.unit : null)  
+    setPendingAction("updating");
 
-    setHabits((prev) =>
-      prev.map((h) =>
-        h.id === editingHabit.id
-          ? {
-              ...h,
-              name: newHabit.name,
-              type: newHabit.type,
-              description: newHabit.description,
-              goal: newHabit.type === "amount" ? Number(newHabit.goal) : null,
-              unit: newHabit.type === "amount" ? newHabit.unit : null,
-            }
-          : h
-      )
-    );
+    try {
+      let habit = await editHabit(
+          userId, newHabit.id, newHabit.name,
+          newHabit.description, newHabit.type,
+          newHabit.type === "amount" ? Number(newHabit.goal).toString() : null,
+          newHabit.type === "amount" ? newHabit.unit : null)  
 
-    setEditingHabit(null);
-    setNewHabit({
-        id: 0,
-      name: '',
-      type: 'checkbox',
-      description: '',
-      goal: "",
-      unit: ""
-    });
+      setHabits((prev) =>
+        prev.map((h) =>
+          h.id === editingHabit.id
+            ? {
+                ...h,
+                name: newHabit.name,
+                type: newHabit.type,
+                description: newHabit.description,
+                goal: newHabit.type === "amount" ? Number(newHabit.goal) : null,
+                unit: newHabit.type === "amount" ? newHabit.unit : null,
+              }
+            : h
+        )
+      );
+
+      setEditingHabit(null);
+      setNewHabit({
+          id: 0,
+        name: '',
+        type: 'checkbox',
+        description: '',
+        goal: "",
+        unit: ""
+      });
+    } finally {
+      setPendingAction(null);
+    }
   };
 
   async function handleDeleteHabit(){
-    if (!editingHabit) return;
+    if (!editingHabit || pendingAction) return;
 
-    let deletedHabit = await deleteHabit(userId, newHabit.id)
+    setPendingAction("deleting");
 
-    setHabits((prev) => prev.filter((h) => h.id !== editingHabit.id));
-    setEditingHabit(null);
-    setNewHabit({
-        id: 0,
-      name: '',
-      type: 'checkbox',
-      description: '',
-      goal: "",
-      unit: ""
-    });
+    try {
+      let deletedHabit = await deleteHabit(userId, newHabit.id)
+
+      setHabits((prev) => prev.filter((h) => h.id !== editingHabit.id));
+      setEditingHabit(null);
+      setNewHabit({
+          id: 0,
+        name: '',
+        type: 'checkbox',
+        description: '',
+        goal: "",
+        unit: ""
+      });
+    } finally {
+      setPendingAction(null);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -258,22 +277,22 @@ export default function Habits({userHabits, userId}: {userHabits: Habit[]; userI
 
               {editingHabit ? (
                 <div className="space-y-2">
-                  <Button onClick={handleUpdateHabit} className="w-full bg-blue-600 hover:bg-blue-700">
-                    Update Habit
+                  <Button onClick={handleUpdateHabit} disabled={pendingAction !== null || !newHabit.name} className="w-full bg-blue-600 hover:bg-blue-700">
+                    {pendingAction === "updating" ? "Updating..." : "Update Habit"}
                   </Button>
                   <div className="flex gap-2">
-                    <Button onClick={handleDeleteHabit} variant="destructive" className="flex-1">
+                    <Button onClick={handleDeleteHabit} disabled={pendingAction !== null} variant="destructive" className="flex-1">
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {pendingAction === "deleting" ? "Deleting..." : "Delete"}
                     </Button>
-                    <Button onClick={handleCancelEdit} variant="outline" className="flex-1">
+                    <Button onClick={handleCancelEdit} disabled={pendingAction !== null} variant="outline" className="flex-1">
                       Cancel
                     </Button>
                   </div>
                 </div>
               ) : (
-                <Button onClick={handleAddHabit} className="w-full bg-blue-600 hover:bg-blue-700">
-                  Add Habit
+                <Button onClick={handleAddHabit} disabled={pendingAction !== null || !newHabit.name} className="w-full bg-blue-600 hover:bg-blue-700">
+                  {pendingAction === "adding" ? "Adding..." : "Add Habit"}
                 </Button>
               )}
             </div>

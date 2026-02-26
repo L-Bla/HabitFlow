@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Slider } from './ui/slider';
-import { getScheduleForDate, saveScheduleProgress } from '@/src/actions/homeActions';
+import { saveScheduleProgress } from '@/src/actions/homeActions';
 import { Button } from './ui/button';
 
 interface ScheduledActivity {
@@ -18,23 +18,10 @@ interface ScheduledActivity {
   progress?: number | null;
 }
 
-export function DailySchedule({userId, userName}: {userId: string; userName: string}) {
-  const [activities, setActivities] = useState<any[]>([]);
+export function DailySchedule({userId, userName, initialActivities}: {userId: string; userName: string; initialActivities: ScheduledActivity[]}) {
+  const [activities, setActivities] = useState<ScheduledActivity[]>(initialActivities ?? []);
   const [savedProgress, setSavedProgress] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function loadSchedule() {
-      const today = new Date().toISOString().split("T")[0];
-
-      const data = await getScheduleForDate(userId, today); // replace 1 with real userId
-      const transformed = data.map(({progress, ...rest}) => ({
-        ...rest, progress: progress
-      }))
-      setActivities(transformed);
-    }
-
-    loadSchedule();
-  }, []);
+  const [isSavingProgress, setIsSavingProgress] = useState(false);
 
   const handleCheckboxChange = (id: string) => {
     setActivities((prev) =>
@@ -53,6 +40,8 @@ export function DailySchedule({userId, userName}: {userId: string; userName: str
   };
 
   const handleSave = async () => {
+    if (isSavingProgress) return;
+
     const today = new Date().toISOString().split("T")[0];
 
     const updates = activities.map((activity) => ({
@@ -65,12 +54,17 @@ export function DailySchedule({userId, userName}: {userId: string; userName: str
           : activity.progress || 0,
     }));
 
-    await saveScheduleProgress(userId, updates); // replace 1 with real userId
+    try {
+      setIsSavingProgress(true);
+      await saveScheduleProgress(userId, updates); // replace 1 with real userId
 
-    setSavedProgress(true);
-    setTimeout(() => {
-      setSavedProgress(false)
-    }, 3000)
+      setSavedProgress(true);
+      setTimeout(() => {
+        setSavedProgress(false)
+      }, 3000)
+    } finally {
+      setIsSavingProgress(false);
+    }
 
   };
 
@@ -134,9 +128,9 @@ export function DailySchedule({userId, userName}: {userId: string; userName: str
         <div className="flex flex-col sm:flex-row justify-end items-center gap-2 m-4 mr-0">
           <Button 
             onClick={handleSave}
-            disabled={savedProgress}
+            disabled={isSavingProgress || activities.length === 0}
             className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
-            {!savedProgress ? "Save Progress" : "Progress saved!"}
+            {isSavingProgress ? "Saving..." : !savedProgress ? "Save Progress" : "Progress saved!"}
           </Button>
           <div
             hidden={!savedProgress}

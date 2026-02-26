@@ -61,6 +61,8 @@ export default function SchedulerClient({
   });
 
   const [warning, setWarning] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] =
+    useState<"addingToday" | "addingTomorrow" | "updating" | "deleting" | null>(null);
 
   const [editingActivity, setEditingActivity] =
     useState<ScheduledActivity | null>(null);
@@ -98,6 +100,8 @@ export default function SchedulerClient({
   }
 
   const handleAddActivity = async (day: 'today' | 'tomorrow') => {
+    if (pendingAction) return;
+
     const isHabit =
       newActivity.habit_id !== null &&
       newActivity.habit_id !== undefined;
@@ -117,6 +121,8 @@ export default function SchedulerClient({
     }
 
     try {
+      setPendingAction(day === 'today' ? 'addingToday' : 'addingTomorrow');
+
       const baseDate = new Date();
       const date =
         day === 'today'
@@ -146,15 +152,19 @@ export default function SchedulerClient({
       resetForm();
     } catch (error) {
       console.error("Failed to add activity:", error);
+    } finally {
+      setPendingAction(null);
     }
   };
 
   async function handleUpdateActivity() {
-    if (!editingActivity) return;
+    if (!editingActivity || pendingAction) return;
 
     const isHabit = !!newActivity.habit_id;
 
     try {
+      setPendingAction('updating');
+
       const updatedFromDB = await updateActivityInDB({
         id: editingActivity.id,
         habit_id: isHabit ? Number(newActivity.habit_id) : null,
@@ -185,13 +195,17 @@ export default function SchedulerClient({
       resetForm();
     } catch (error) {
       console.error("Failed to update activity:", error);
+    } finally {
+      setPendingAction(null);
     }
   }
 
   async function handleDeleteActivity() {
-    if (!editingActivity) return;
+    if (!editingActivity || pendingAction) return;
 
     try {
+      setPendingAction('deleting');
+
       await deleteActivityFromDB(editingActivity.id, userId);
 
       setTodaySchedule(prev =>
@@ -205,6 +219,8 @@ export default function SchedulerClient({
       resetForm();
     } catch (error) {
       console.error("Failed to delete activity:", error);
+    } finally {
+      setPendingAction(null);
     }
   }
 
@@ -462,21 +478,24 @@ export default function SchedulerClient({
   <div className="flex flex-col sm:flex-row gap-2">
     <Button
       onClick={handleUpdateActivity}
+      disabled={pendingAction !== null}
       className="flex-1 bg-blue-600 hover:bg-blue-700"
     >
-      Update Activity
+      {pendingAction === 'updating' ? 'Updating...' : 'Update Activity'}
     </Button>
 
     <Button
       onClick={handleDeleteActivity}
+      disabled={pendingAction !== null}
       variant="destructive"
       className="flex-1"
     >
-      Delete
+      {pendingAction === 'deleting' ? 'Deleting...' : 'Delete'}
     </Button>
 
     <Button
       onClick={resetForm}
+      disabled={pendingAction !== null}
       variant="outline"
       className="flex-1"
     >
@@ -487,20 +506,22 @@ export default function SchedulerClient({
   <div className="flex flex-col sm:flex-row gap-2">
     <Button
       onClick={() => handleAddActivity("today")}
+      disabled={pendingAction !== null}
       onMouseEnter={() => setHoveredTarget("today")}
       onMouseLeave={() => setHoveredTarget(null)}
       className="flex-1 bg-blue-600 hover:bg-blue-700"
     >
-      Add Activity Today
+      {pendingAction === 'addingToday' ? 'Adding...' : 'Add Activity Today'}
     </Button>
 
     <Button
       onClick={() => handleAddActivity("tomorrow")}
+      disabled={pendingAction !== null}
       onMouseEnter={() => setHoveredTarget("tomorrow")}
       onMouseLeave={() => setHoveredTarget(null)}
       className="flex-1 bg-blue-600 hover:bg-blue-700"
     >
-      Add Activity Tomorrow
+      {pendingAction === 'addingTomorrow' ? 'Adding...' : 'Add Activity Tomorrow'}
     </Button>
   </div>
 )}
