@@ -53,7 +53,7 @@ Ispoštovan jasnim označivanjem granica gumbova, aktivnosti i raspoloženja, nj
 
 ### Hick's law i osvrt na korisničku populaciju:
 ---
-Promatrajući prijašnje dizajne stranica, da se zaključiti da su neke značajke izbačene. Osim ograničenosti resursa (poglavito vremena), glavni razlog tome korisnici su kojima je aplikacija namjenjena. Njen izvorni dizajn i funkcionalnost odražava njenog tvorca, to jest pretpostavlja upoznatost s i entuzijazam za sustavno bilježenje i uređivanje, prikaz i proučavanje statističkih podataka, a od 2 od 3 gnerirane persone (ni prosječnog čovjeka) to se ne može očekivati. Zato su izbačeni dodatni parametri pri crtanju grafa, raspoloženje svedeno na dva parametra i to prikazana relativno intuitivnom mrežom. Pazilo se i o drugoj krajnosti - odveć minimalnom dizajnu. Primjer su toga dva tipa aktivnosti - u teoriji je mogao biti samo jedan pa da što je trenutno Checkbox postane amount s goal:1.
+Promatrajući [prijašnje dizajne](./) stranica, da se zaključiti da su neke značajke izbačene. Osim ograničenosti resursa (poglavito vremena), glavni razlog tome korisnici su kojima je aplikacija namjenjena. Njen izvorni dizajn i funkcionalnost odražava njenog tvorca, to jest pretpostavlja upoznatost s i entuzijazam za sustavno bilježenje i uređivanje, prikaz i proučavanje statističkih podataka, a to se ne može očekivati od 2 od 3 gnerirane persone ni od prosječnog čovjeka. Zato su izbačeni dodatni parametri pri crtanju grafa, raspoloženje svedeno na dva parametra i to prikazana relativno intuitivnom mrežom. Pazilo se i o drugoj krajnosti - odveć minimalnom dizajnu. Primjer su toga dva tipa aktivnosti - u teoriji je mogao biti samo jedan pa da što je trenutno Checkbox postane amount s goal:1.
 
 
 ### Usability heuristics:
