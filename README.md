@@ -4,6 +4,10 @@
 - Link to your final report: [**Final Report**](./assignments/final_report/Report.md) <!-- Replace with actual URL -->
 - Link to video demo: [**Video Demonstration**](./assignments/final_report/demo2.webm)
 <!-- Add more as necessary -->
+##### Demo account
+if you want to see how the app looks like with data tracked over a few weeks:
+- email: adalbert.007@email.com
+- password: password1
 
 ### Semester Assignments
 
@@ -14,7 +18,4 @@
 - Link to Assignment 5 (Deployed webapp): [**https://mens-sana.vercel.app/**](https://mens-sana.vercel.app/)
 <!-- Add more assignments as necessary -->
 
-#### Demo account
-if you want to see how the app looks like with data tracked over a few weeks:
-- email: adalbert.007@email.com
-- password: password1
+
